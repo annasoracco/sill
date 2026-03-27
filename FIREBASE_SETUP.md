@@ -1,88 +1,102 @@
 # 🔥 Firebase Setup Guide for Sill
 
-This walks you through setting up Firebase so your plant data actually saves.
-It takes about 10 minutes. You got this!
+You've already created the Firebase project (nice!). Here's exactly what to click next.
+Each step tells you what to look for on screen.
 
 ---
 
-## Step 1: Create a Firebase Project
+## Step 1: Create a Firebase Project ✅ DONE
 
-1. Go to [console.firebase.google.com](https://console.firebase.google.com/)
-2. Sign in with your Google account
-3. Click **"Create a project"** (or "Add project")
-4. Name it `sill` (or whatever you want)
-5. You can disable Google Analytics (we don't need it), then click **Create Project**
-6. Wait for it to finish, then click **Continue**
+You did this already! Your project is called "sil-" and you see the "Hello, Anna" page.
 
-## Step 2: Add a Web App
+---
 
-1. On the project overview page, click the **web icon** `</>` (it says "Add an app")
-2. Give it a nickname like `sill-web`
-3. Check the box **"Also set up Firebase Hosting"** if you want to deploy later (optional)
-4. Click **Register app**
-5. You'll see a code block with your config. It looks like this:
+## Step 2: Register a Web App
+
+You should be on the Firebase project overview page ("Hello, Anna").
+
+1. Look at the **top-left** of the page, right under "sil-"
+2. Click the **"+ Add app"** button
+3. You'll see icons for different platforms. Click the one that looks like **`</>`** (two angle brackets, meaning "web")
+4. It'll ask for a nickname. Type: `sill`
+5. You do NOT need to check "Firebase Hosting" right now
+6. Click **"Register app"**
+7. Now you'll see a code block with your config. It looks something like this:
 
 ```js
 const firebaseConfig = {
   apiKey: "AIzaSy...",
-  authDomain: "sill-xxxxx.firebaseapp.com",
-  projectId: "sill-xxxxx",
-  storageBucket: "sill-xxxxx.firebasestorage.app",
+  authDomain: "sil-xxxxx.firebaseapp.com",
+  projectId: "sil-xxxxx",
+  storageBucket: "sil-xxxxx.firebasestorage.app",
   messagingSenderId: "1234567890",
   appId: "1:1234567890:web:abcdef123456"
 };
 ```
 
-6. **Copy those values!** You'll paste them into `src/firebase.js` in a moment
-7. Click **Continue to console**
+8. **Copy all those values** (you'll paste them in Step 3)
+9. Click **"Continue to console"** to go back to the main page
 
-## Step 3: Paste Your Config
+---
 
-Open `src/firebase.js` in your editor and replace the empty strings with your values:
+## Step 3: Paste Your Config Into the Code
 
-```js
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY_HERE",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT",
-  storageBucket: "YOUR_PROJECT.firebasestorage.app",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
-```
+1. Open the file `src/firebase.js` in VS Code (it's in your sill project)
+2. You'll see empty strings like `apiKey: ""`
+3. Replace each empty string with the matching value you copied from Firebase
+4. Save the file
 
-> **Is this safe to commit?** The API key is safe to have in frontend code.
-> Firebase security comes from your security rules (Step 6), not from hiding the key.
+> **Is this safe to commit?** Yes! Firebase API keys are meant to be in frontend code.
+> Security comes from the rules we set up in Steps 6 and 7, not from hiding the key.
 
-## Step 4: Enable Google Sign-In
+---
 
-1. In the Firebase console, click **Authentication** in the left sidebar
-2. Click **Get started**
-3. Under "Sign-in method", click **Google**
-4. Toggle the **Enable** switch on
-5. Choose a support email (your Gmail is fine)
-6. Click **Save**
+## Step 4: Turn On Google Sign-In
 
-## Step 5: Create the Firestore Database
+1. Look at the **left sidebar** in the Firebase console
+2. Click **"Authentication"** (it has a person icon)
+   - If you don't see it, click "Build" first to expand that section
+3. Click the **"Get started"** button
+4. You'll see a list of sign-in providers. Find **"Google"** and click on it
+5. Click the **toggle switch** to turn it ON (it turns blue)
+6. It'll ask for a "support email". Pick your Gmail address from the dropdown
+7. Click **"Save"**
 
-1. In the left sidebar, click **Firestore Database**
-2. Click **Create database**
-3. Choose a location close to you (e.g., `us-east1` or `us-central1`)
-4. Select **"Start in test mode"** (we'll add proper rules in Step 6)
-5. Click **Create**
+That's it for auth! Users (you!) can now sign in with Google.
 
-## Step 6: Set Up Security Rules
+---
 
-Once Firestore is created:
+## Step 5: Create the Database
 
-1. Click the **Rules** tab in Firestore
-2. Replace the default rules with this:
+This is where your plant data will live.
+
+1. In the **left sidebar**, click **"Firestore Database"**
+   - Again, might be under "Build" if collapsed
+2. Click **"Create database"**
+3. It'll ask where to store data. Pick a location close to you:
+   - US East Coast: `us-east1`
+   - US West Coast: `us-west1`
+   - Europe: `europe-west1`
+4. Click **"Next"**
+5. Select **"Start in test mode"** (the second option)
+6. Click **"Create"**
+7. Wait a few seconds for it to set up. You'll see an empty database page.
+
+---
+
+## Step 6: Set Database Security Rules
+
+Right now the database is wide open (test mode). Let's lock it down so only you
+can see your own plants.
+
+1. You should be on the Firestore page. Click the **"Rules"** tab at the top
+2. You'll see some default rules. **Select all the text** and **delete it**
+3. Paste this instead:
 
 ```
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Each user can only read/write their own data
     match /users/{userId}/{document=**} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
@@ -90,24 +104,27 @@ service cloud.firestore {
 }
 ```
 
-3. Click **Publish**
+4. Click **"Publish"**
 
-This means: you can only read/write your own plant data when signed in. Nobody else can see your plants.
+---
 
-## Step 7: Enable Firebase Storage (for photos)
+## Step 7: Turn On Photo Storage
 
-1. In the left sidebar, click **Storage**
-2. Click **Get started**
-3. Select **"Start in test mode"** (we'll tighten this too)
-4. Choose the same location as your Firestore
-5. Click **Done**
-6. Go to the **Rules** tab and replace with:
+This lets you upload plant photos.
+
+1. In the **left sidebar**, click **"Storage"**
+2. Click **"Get started"**
+3. Select **"Start in test mode"**
+4. Click **"Next"**, then pick the same location you chose for Firestore
+5. Click **"Done"**
+6. Once it's created, click the **"Rules"** tab at the top
+7. **Select all** the default rules and **delete them**
+8. Paste this:
 
 ```
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    // Users can only upload to their own folder
     match /users/{userId}/{allPaths=**} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
@@ -115,42 +132,44 @@ service firebase.storage {
 }
 ```
 
-7. Click **Publish**
+9. Click **"Publish"**
 
-## Step 8: Test It!
+---
 
-Back in your terminal:
+## Step 8: Try It Out! 🎉
 
-```bash
+Back in your terminal (VS Code), run:
+
+```
 npm run dev
 ```
 
-Open the URL Vite gives you (usually `http://localhost:5173`).
-You should see the Sill landing page. Click **Continue with Google**, sign in,
-and you're in!
+Open the URL it gives you (probably `http://localhost:5173`).
+You should see the Sill landing page. Click **"Continue with Google"**, sign in,
+and you're in! Try adding a plant!
 
 ---
 
 ## Troubleshooting
 
 **"Firebase: Error (auth/unauthorized-domain)"**
-- Go to Firebase Console > Authentication > Settings > Authorized domains
-- Add `localhost` if it's not there
+- In Firebase console: Authentication > Settings > Authorized domains
+- Make sure `localhost` is in the list (it usually is by default)
 
 **"Missing or insufficient permissions"**
-- Double-check your Firestore rules from Step 6
-- Make sure you're signed in
+- Go back to Firestore > Rules tab
+- Make sure you pasted the rules from Step 6 and clicked "Publish"
 
-**Nothing happens when I click sign in**
-- Open browser DevTools (F12) > Console tab
-- Look for red error messages
-- Most likely: the config values in `src/firebase.js` are wrong or still empty
+**Nothing happens when I click "Continue with Google"**
+- Press F12 in your browser to open DevTools
+- Click the "Console" tab
+- Look for red error messages, they usually tell you what's wrong
+- Most likely: the config values in `src/firebase.js` are still empty or wrong
 
 **Photos won't upload**
-- Make sure you did Step 7 (Storage setup)
-- Check the Storage rules
+- Make sure you did Step 7 (Storage)
+- Check that Storage rules were published
 
 ---
 
-That's it! Once you paste your config and enable those 3 services
-(Auth, Firestore, Storage), the whole app works. 🌿
+You're done! The whole app should work now. 🌿
