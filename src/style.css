@@ -934,6 +934,158 @@ img {
 
 
 /* ═══════════════════════════════════════════
+   Journal Timeline
+   ═══════════════════════════════════════════ */
+
+.journal-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.journal-entry {
+  display: flex;
+  gap: var(--space-md);
+  padding: var(--space-md) 0;
+  border-bottom: 1px solid var(--cream);
+  position: relative;
+}
+
+.journal-entry:last-child {
+  border-bottom: none;
+}
+
+.journal-entry-marker {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background: var(--sage-ghost);
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.journal-entry-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.journal-entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-xs);
+}
+
+.journal-entry-type {
+  font-size: 0.75rem;
+  font-weight: 550;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--moss);
+}
+
+.journal-entry-date {
+  font-size: 0.75rem;
+  color: var(--sage-mist);
+}
+
+.journal-entry-note {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--forest);
+  white-space: pre-wrap;
+}
+
+.journal-entry-photo {
+  margin-top: var(--space-sm);
+  border-radius: var(--radius-md);
+  max-height: 200px;
+  object-fit: cover;
+}
+
+.journal-delete-btn {
+  opacity: 0;
+  transition: opacity var(--duration-fast);
+  flex-shrink: 0;
+}
+
+.journal-entry:hover .journal-delete-btn {
+  opacity: 1;
+}
+
+
+/* ═══════════════════════════════════════════
+   Wishlist
+   ═══════════════════════════════════════════ */
+
+.wishlist-view {
+  animation: fadeIn 0.4s var(--ease-out);
+}
+
+.wishlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-md);
+}
+
+.wish-card {
+  background: var(--white);
+  border: 1px solid var(--cream);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  transition: all var(--duration-fast) var(--ease-out);
+  animation: fadeInUp 0.4s var(--ease-out) both;
+}
+
+.wish-card:hover {
+  border-color: var(--sage-mist);
+  box-shadow: var(--shadow-sm);
+}
+
+.wish-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-sm);
+}
+
+.wish-name {
+  font-size: 1.0625rem;
+  font-weight: 550;
+}
+
+.wish-species {
+  font-size: 0.8125rem;
+  color: var(--sage);
+  font-style: italic;
+  margin-top: var(--space-2xs);
+}
+
+.wish-notes {
+  font-size: 0.875rem;
+  color: var(--moss);
+  line-height: 1.5;
+  margin-bottom: var(--space-sm);
+}
+
+.wish-priority {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 0.8125rem;
+  color: var(--sage);
+}
+
+.wish-priority-label {
+  font-weight: 450;
+}
+
+
+/* ═══════════════════════════════════════════
    Scrollbar
    ═══════════════════════════════════════════ */
 

@@ -8,6 +8,14 @@ import {
   formatDueDate,
   CARE_TYPES,
 } from '../data/care.js';
+import {
+  getJournalEntries,
+  addJournalEntry,
+  deleteJournalEntry,
+  uploadJournalPhoto,
+  formatEntryDate,
+  ENTRY_TYPES,
+} from '../data/journal.js';
 
 export async function renderPlantDetail(container, user, plantId, navigate) {
   container.innerHTML = `
@@ -141,6 +149,20 @@ function renderDetail(container, plant, user, navigate) {
         </div>
       </div>
 
+      <div class="detail-card" style="margin-top: var(--space-lg);">
+        <div class="detail-card-header">
+          <h3><i class="fas fa-book-open"></i> Growth Journal</h3>
+          <button class="btn-icon" id="add-journal-btn" title="Add entry">
+            <i class="fas fa-plus"></i>
+          </button>
+        </div>
+        <div class="detail-card-body" id="journal-body">
+          <div class="loading-state" style="padding: var(--space-md);">
+            <div class="loading-spinner"></div>
+          </div>
+        </div>
+      </div>
+
       ${plant.careNotes ? `
         <div class="detail-card" style="margin-top: var(--space-lg);">
           <div class="detail-card-header">
@@ -177,10 +199,56 @@ function renderDetail(container, plant, user, navigate) {
         </div>
       </div>
     </div>
+
+    <div class="modal-overlay" id="journal-modal-overlay">
+      <div class="modal" style="max-width: 480px;">
+        <div class="modal-header">
+          <h2>Add Journal Entry</h2>
+          <button class="btn-icon modal-close" id="journal-modal-close">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form class="modal-form" id="journal-form">
+          <div class="form-group">
+            <label>Type</label>
+            <div class="room-chips" id="entry-type-chips">
+              ${Object.entries(ENTRY_TYPES).map(([key, t]) => `
+                <button type="button" class="room-chip ${key === 'observation' ? 'selected' : ''}" data-type="${key}">
+                  <i class="fas ${t.icon}" style="color: ${t.color}"></i> ${t.label}
+                </button>
+              `).join('')}
+            </div>
+            <input type="hidden" id="journal-type" value="observation">
+          </div>
+          <div class="form-group">
+            <label for="journal-note">Note <span class="required">*</span></label>
+            <textarea id="journal-note" rows="3" placeholder="What's happening with your plant?" required></textarea>
+          </div>
+          <div class="form-group">
+            <label>Photo (optional)</label>
+            <div class="photo-upload">
+              <div class="photo-upload-area" id="journal-upload-area">
+                <i class="fas fa-camera"></i>
+                <span>Add a photo</span>
+              </div>
+              <img id="journal-photo-preview" class="photo-preview" style="display: none;">
+              <input type="file" id="journal-photo" accept="image/*" hidden>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="journal-cancel">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="journal-submit">
+              <i class="fas fa-plus"></i> Add Entry
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   `;
 
-  // Load care schedules
+  // Load care schedules and journal
   loadCareSchedules(user.uid, plant, navigate, container);
+  loadJournal(user.uid, plant);
 
   // Water now
   document.getElementById('water-now-btn').addEventListener('click', async () => {
@@ -248,6 +316,96 @@ function renderDetail(container, plant, user, navigate) {
       loadCareSchedules(user.uid, plant, navigate, container);
     } catch (err) {
       console.error('Failed to add care schedule:', err);
+    }
+  });
+
+  // Journal modal
+  const journalOverlay = document.getElementById('journal-modal-overlay');
+  const journalForm = document.getElementById('journal-form');
+  const journalFileInput = document.getElementById('journal-photo');
+  const journalUploadArea = document.getElementById('journal-upload-area');
+  const journalPreview = document.getElementById('journal-photo-preview');
+  let journalFile = null;
+
+  document.getElementById('add-journal-btn').addEventListener('click', () => {
+    journalOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    journalForm.reset();
+    journalFile = null;
+    journalPreview.style.display = 'none';
+    journalUploadArea.style.display = '';
+    document.getElementById('journal-type').value = 'observation';
+    document.querySelectorAll('#entry-type-chips .room-chip').forEach((c) => {
+      c.classList.toggle('selected', c.dataset.type === 'observation');
+    });
+    setTimeout(() => document.getElementById('journal-note').focus(), 100);
+  });
+
+  document.getElementById('journal-modal-close').addEventListener('click', () => {
+    journalOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+  document.getElementById('journal-cancel').addEventListener('click', () => {
+    journalOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+  journalOverlay.addEventListener('click', (e) => {
+    if (e.target === journalOverlay) {
+      journalOverlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  });
+
+  // Entry type chips
+  document.getElementById('entry-type-chips').addEventListener('click', (e) => {
+    const chip = e.target.closest('.room-chip');
+    if (!chip) return;
+    document.querySelectorAll('#entry-type-chips .room-chip').forEach((c) => c.classList.remove('selected'));
+    chip.classList.add('selected');
+    document.getElementById('journal-type').value = chip.dataset.type;
+  });
+
+  // Photo upload for journal
+  journalUploadArea.addEventListener('click', () => journalFileInput.click());
+  journalFileInput.addEventListener('change', () => {
+    if (journalFileInput.files.length) {
+      journalFile = journalFileInput.files[0];
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        journalPreview.src = ev.target.result;
+        journalPreview.style.display = 'block';
+        journalUploadArea.style.display = 'none';
+      };
+      reader.readAsDataURL(journalFile);
+    }
+  });
+
+  // Journal submit
+  journalForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const submitBtn = document.getElementById('journal-submit');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+    try {
+      let photoURL = null;
+      if (journalFile) {
+        photoURL = await uploadJournalPhoto(user.uid, plant.id, journalFile);
+      }
+      await addJournalEntry(user.uid, plant.id, {
+        type: document.getElementById('journal-type').value,
+        note: document.getElementById('journal-note').value.trim(),
+        photoURL,
+        date: new Date(),
+      });
+      journalOverlay.classList.remove('open');
+      document.body.style.overflow = '';
+      loadJournal(user.uid, plant);
+    } catch (err) {
+      console.error('Failed to add journal entry:', err);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<i class="fas fa-plus"></i> Add Entry';
     }
   });
 }
@@ -322,5 +480,64 @@ async function loadCareSchedules(userId, plant, navigate, container) {
   } catch (err) {
     console.error('Failed to load care schedules:', err);
     body.innerHTML = '<p class="text-muted">Could not load care schedules.</p>';
+  }
+}
+
+async function loadJournal(userId, plant) {
+  const body = document.getElementById('journal-body');
+  try {
+    const entries = await getJournalEntries(userId, plant.id);
+    if (entries.length === 0) {
+      body.innerHTML = `
+        <div class="care-empty">
+          <p>No journal entries yet.</p>
+          <p class="text-muted" style="font-size: 0.8125rem;">Record observations, milestones, and care moments.</p>
+        </div>
+      `;
+      return;
+    }
+
+    body.innerHTML = `
+      <div class="journal-timeline">
+        ${entries.map((entry) => {
+          const type = ENTRY_TYPES[entry.type] || ENTRY_TYPES.observation;
+          return `
+            <div class="journal-entry">
+              <div class="journal-entry-marker" style="color: ${type.color}">
+                <i class="fas ${type.icon}"></i>
+              </div>
+              <div class="journal-entry-content">
+                <div class="journal-entry-header">
+                  <span class="journal-entry-type">${type.label}</span>
+                  <span class="journal-entry-date">${formatEntryDate(entry.date)}</span>
+                </div>
+                <p class="journal-entry-note">${entry.note}</p>
+                ${entry.photoURL ? `
+                  <img src="${entry.photoURL}" class="journal-entry-photo" alt="Journal photo">
+                ` : ''}
+              </div>
+              <button class="btn-icon journal-delete-btn" data-id="${entry.id}" title="Delete">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+
+    body.querySelectorAll('.journal-delete-btn').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('Delete this journal entry?')) return;
+        try {
+          await deleteJournalEntry(userId, plant.id, btn.dataset.id);
+          loadJournal(userId, plant);
+        } catch (err) {
+          console.error('Failed to delete journal entry:', err);
+        }
+      });
+    });
+  } catch (err) {
+    console.error('Failed to load journal:', err);
+    body.innerHTML = '<p class="text-muted">Could not load journal.</p>';
   }
 }

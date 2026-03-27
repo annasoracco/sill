@@ -5,6 +5,7 @@ import { renderLanding } from './views/landing.js';
 import { renderDashboard } from './views/dashboard.js';
 import { renderPlants } from './views/plants.js';
 import { renderPlantDetail } from './views/plant-detail.js';
+import { renderWishlist } from './views/wishlist.js';
 import { initPlantModal } from './components/plant-modal.js';
 
 const app = document.getElementById('app');
@@ -68,6 +69,9 @@ function renderAppShell(viewName, params = {}) {
       break;
     case 'plant-detail':
       renderPlantDetail(main, currentUser, params.plantId, navigate);
+      break;
+    case 'wishlist':
+      renderWishlist(main, currentUser);
       break;
     default:
       renderComingSoon(main, viewName);
