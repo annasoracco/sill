@@ -712,4 +712,25 @@ img {
   .landing-title {
     font-size: clamp(2.5rem, 12vw, 4.5rem);
   }
+
+  .detail-hero {
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .detail-photo-wrap {
+    width: 100%;
+  }
+
+  .detail-name {
+    font-size: 1.75rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .plants-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
 }

@@ -3,11 +3,19 @@ import { onAuthChange, signInWithGoogle, logOut } from './auth.js';
 import { createRouter } from './router.js';
 import { renderLanding } from './views/landing.js';
 import { renderDashboard } from './views/dashboard.js';
+import { renderPlants } from './views/plants.js';
+import { renderPlantDetail } from './views/plant-detail.js';
+import { initPlantModal } from './components/plant-modal.js';
 
 const app = document.getElementById('app');
 let currentUser = null;
+let modalInit = false;
 
-function renderAppShell(viewName) {
+function navigate(path) {
+  window.location.hash = path;
+}
+
+function renderAppShell(viewName, params = {}) {
   app.innerHTML = `
     <header class="app-header">
       <a href="#/" class="header-logo">
@@ -19,7 +27,7 @@ function renderAppShell(viewName) {
           <i class="fas fa-th-large"></i>
           <span>Dashboard</span>
         </a>
-        <a href="#/plants" class="nav-link ${viewName === 'plants' ? 'active' : ''}">
+        <a href="#/plants" class="nav-link ${viewName === 'plants' || viewName === 'plant-detail' ? 'active' : ''}">
           <i class="fas fa-seedling"></i>
           <span>My Plants</span>
         </a>
@@ -44,10 +52,22 @@ function renderAppShell(viewName) {
 
   document.getElementById('logout-btn').addEventListener('click', logOut);
 
+  // Init the plant modal once per session
+  if (!modalInit) {
+    initPlantModal(currentUser.uid, () => router.handleRoute());
+    modalInit = true;
+  }
+
   const main = document.getElementById('main-content');
   switch (viewName) {
     case 'dashboard':
       renderDashboard(main, currentUser);
+      break;
+    case 'plants':
+      renderPlants(main, currentUser, navigate);
+      break;
+    case 'plant-detail':
+      renderPlantDetail(main, currentUser, params.plantId, navigate);
       break;
     default:
       renderComingSoon(main, viewName);
@@ -65,12 +85,12 @@ function renderComingSoon(container, viewName) {
   `;
 }
 
-function renderView(viewName) {
+function renderView(viewName, params = {}) {
   if (!currentUser) {
     renderLanding(app, signInWithGoogle);
     return;
   }
-  renderAppShell(viewName);
+  renderAppShell(viewName, params);
 }
 
 // Routes
@@ -78,6 +98,7 @@ const routes = {
   '/': () => renderView('dashboard'),
   '/plants': () => renderView('plants'),
   '/wishlist': () => renderView('wishlist'),
+  '/plant/:id': (plantId) => renderView('plant-detail', { plantId }),
 };
 
 const router = createRouter(routes);
@@ -85,5 +106,6 @@ const router = createRouter(routes);
 // Auth drives everything: when auth state changes, re-render
 onAuthChange((user) => {
   currentUser = user;
+  modalInit = false;
   router.handleRoute();
 });
