@@ -803,6 +803,655 @@ img {
 
 
 /* ═══════════════════════════════════════════
+   Plants View Header
+   ═══════════════════════════════════════════ */
+
+.plants-view {
+  animation: fadeIn 0.4s var(--ease-out);
+}
+
+.plants-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-xl);
+}
+
+.plants-title {
+  font-size: 1.75rem;
+  font-weight: 500;
+}
+
+.plants-subtitle {
+  margin-top: var(--space-2xs);
+  font-size: 0.9375rem;
+}
+
+
+/* ═══════════════════════════════════════════
+   Filter Chips
+   ═══════════════════════════════════════════ */
+
+.plants-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xl);
+}
+
+.filter-chip {
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-full);
+  background: var(--white);
+  border: 1px solid var(--cream);
+  font-size: 0.8125rem;
+  font-weight: 450;
+  color: var(--sage);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.filter-chip:hover {
+  border-color: var(--sage-mist);
+  color: var(--forest);
+}
+
+.filter-chip.active {
+  background: var(--forest);
+  border-color: var(--forest);
+  color: var(--linen);
+}
+
+
+/* ═══════════════════════════════════════════
+   Plant Cards Grid
+   ═══════════════════════════════════════════ */
+
+.plants-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-lg);
+}
+
+.plant-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--cream);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-out);
+  animation: fadeInUp 0.5s var(--ease-out) both;
+}
+
+.plant-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--sage-mist);
+}
+
+.card-photo-wrap {
+  position: relative;
+  width: 100%;
+  padding-top: 70%;
+  overflow: hidden;
+  background: var(--parchment);
+}
+
+.card-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+
+.plant-card:hover .card-photo {
+  transform: scale(1.05);
+}
+
+.card-photo-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--sage-ghost), var(--parchment));
+}
+
+.placeholder-emoji {
+  font-size: 3rem;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+.card-status-badge {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.card-body {
+  padding: var(--space-md);
+}
+
+.card-name {
+  font-size: 1.0625rem;
+  font-weight: 550;
+  margin-bottom: var(--space-2xs);
+}
+
+.card-species {
+  font-size: 0.8125rem;
+  color: var(--sage);
+  font-style: italic;
+  margin-bottom: var(--space-sm);
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  font-size: 0.8125rem;
+}
+
+.card-room {
+  color: var(--moss);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.card-room i { font-size: 0.6875rem; }
+
+.card-watered {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.card-watered i { font-size: 0.625rem; }
+
+/* Watering status colors */
+.status-overdue {
+  color: var(--danger);
+  background: #FDE8E8;
+}
+
+.status-due {
+  color: var(--warning);
+  background: #FEF3CD;
+}
+
+.status-soon {
+  color: #8B7028;
+  background: #FFF8E1;
+}
+
+.status-happy {
+  color: var(--success);
+  background: #E8F5E9;
+}
+
+.status-unknown {
+  color: var(--sage);
+  background: var(--sage-ghost);
+}
+
+
+/* ═══════════════════════════════════════════
+   Plant Detail
+   ═══════════════════════════════════════════ */
+
+.plant-detail {
+  animation: fadeIn 0.4s var(--ease-out);
+}
+
+.detail-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-xl);
+}
+
+.btn-back {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 0.9375rem;
+  color: var(--sage);
+  transition: color var(--duration-fast);
+}
+
+.btn-back:hover { color: var(--forest); }
+
+.detail-actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.btn-sm {
+  padding: var(--space-xs) var(--space-md);
+  font-size: 0.8125rem;
+}
+
+.detail-delete-btn {
+  color: var(--sage);
+}
+
+.detail-delete-btn:hover {
+  color: var(--danger);
+  background: #FDE8E8;
+}
+
+.detail-hero {
+  display: flex;
+  gap: var(--space-2xl);
+  margin-bottom: var(--space-2xl);
+  align-items: flex-start;
+}
+
+.detail-photo-wrap {
+  width: 280px;
+  flex-shrink: 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--parchment);
+}
+
+.detail-photo {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+}
+
+.detail-photo-placeholder {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5rem;
+  background: linear-gradient(135deg, var(--sage-ghost), var(--parchment));
+}
+
+.detail-hero-info {
+  padding-top: var(--space-md);
+}
+
+.detail-name {
+  font-size: 2.25rem;
+  font-weight: 500;
+  margin-bottom: var(--space-xs);
+}
+
+.detail-species {
+  font-size: 1.0625rem;
+  color: var(--sage);
+  font-style: italic;
+  margin-bottom: var(--space-lg);
+}
+
+.detail-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.detail-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-full);
+  background: var(--sage-ghost);
+  color: var(--moss);
+  font-size: 0.8125rem;
+  font-weight: 450;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-lg);
+}
+
+.detail-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--cream);
+  overflow: hidden;
+}
+
+.detail-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--cream);
+}
+
+.detail-card-header h3 {
+  font-size: 1rem;
+  font-weight: 550;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.detail-card-header h3 i {
+  color: var(--sage);
+  font-size: 0.875rem;
+}
+
+.detail-card-body {
+  padding: var(--space-lg);
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-2xs) var(--space-sm);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.watering-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.watering-stat .stat-label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--sage);
+  margin-bottom: var(--space-2xs);
+}
+
+.watering-stat .stat-value {
+  font-size: 1.0625rem;
+  font-weight: 500;
+}
+
+.water-now-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+.coming-soon-mini {
+  text-align: center;
+  padding: var(--space-xl);
+  color: var(--sage);
+}
+
+.coming-soon-mini span {
+  font-size: 1.5rem;
+  display: block;
+  margin-bottom: var(--space-sm);
+}
+
+.care-notes-text {
+  line-height: 1.7;
+  color: var(--moss);
+  white-space: pre-wrap;
+}
+
+
+/* ═══════════════════════════════════════════
+   Modal
+   ═══════════════════════════════════════════ */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 43, 26, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-normal) var(--ease-out);
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  width: 90%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(20px) scale(0.97);
+  transition: transform var(--duration-normal) var(--ease-out);
+}
+
+.modal-overlay.open .modal {
+  transform: translateY(0) scale(1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-lg) var(--space-xl);
+  border-bottom: 1px solid var(--cream);
+}
+
+.modal-header h2 {
+  font-size: 1.25rem;
+}
+
+.modal-close {
+  color: var(--sage);
+}
+
+.modal-form {
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--cream);
+}
+
+
+/* ═══════════════════════════════════════════
+   Forms
+   ═══════════════════════════════════════════ */
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.form-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--forest);
+}
+
+.required { color: var(--danger); }
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+}
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--cream);
+  border-radius: var(--radius-md);
+  background: var(--linen);
+  color: var(--forest);
+  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
+  outline: none;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--sage);
+  box-shadow: 0 0 0 3px var(--sage-ghost);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--sage-mist);
+}
+
+.input-sm {
+  width: 70px;
+  text-align: center;
+}
+
+select {
+  cursor: pointer;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.watering-input {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 0.9375rem;
+  color: var(--moss);
+}
+
+/* Room chips in modal */
+.room-selector {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.room-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.room-chip {
+  padding: var(--space-2xs) var(--space-sm);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--cream);
+  background: var(--linen);
+  font-size: 0.75rem;
+  color: var(--sage);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.room-chip:hover {
+  border-color: var(--sage-mist);
+  color: var(--forest);
+}
+
+.room-chip.selected {
+  background: var(--sage-whisper);
+  border-color: var(--sage);
+  color: var(--forest);
+  font-weight: 500;
+}
+
+/* Photo upload */
+.photo-upload-area {
+  border: 2px dashed var(--sage-mist);
+  border-radius: var(--radius-md);
+  padding: var(--space-2xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--sage);
+  cursor: pointer;
+  transition: all var(--duration-fast);
+}
+
+.photo-upload-area:hover,
+.photo-upload-area.drag-over {
+  border-color: var(--sage);
+  background: var(--sage-ghost);
+}
+
+.photo-upload-area i {
+  font-size: 1.5rem;
+}
+
+.photo-upload-area span {
+  font-size: 0.8125rem;
+}
+
+.photo-preview {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+}
+
+
+/* ═══════════════════════════════════════════
+   Loading State
+   ═══════════════════════════════════════════ */
+
+.loading-state {
+  text-align: center;
+  padding: var(--space-4xl);
+  color: var(--sage);
+}
+
+.loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--sage-ghost);
+  border-top-color: var(--sage);
+  border-radius: 50%;
+  margin: 0 auto var(--space-md);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+
+/* ═══════════════════════════════════════════
    Care Schedule List
    ═══════════════════════════════════════════ */
 
