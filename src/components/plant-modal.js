@@ -3,14 +3,22 @@ import { addPlant, updatePlant, uploadPlantPhoto } from '../data/plants.js';
 const COMMON_ROOMS = [
   'Living Room',
   'Bedroom',
+  'Guest Room',
   'Kitchen',
   'Bathroom',
   'Office',
+  'Book Room',
+  'Studio',
   'Balcony',
   'Patio',
   'Hallway',
   'Dining Room',
   'Windowsill',
+  'Garage',
+  'Basement',
+  'Laundry Room',
+  'Sunroom',
+  'Front Porch',
 ];
 
 export function initPlantModal(userId, onSaved) {
