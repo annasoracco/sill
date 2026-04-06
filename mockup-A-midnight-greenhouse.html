@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sill — Mockup A: Midnight Greenhouse</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    /* ══════════════════════════════════════════════════════════════
+       MOCKUP A: MIDNIGHT GREENHOUSE
+       Concept: Walking into a late-night plant shop in Williamsburg.
+       Exposed brick warmth, hand-painted signage, amber Edison bulbs,
+       neon "OPEN" sign buzzing in the window. Warm, textured, alive.
+
+       Palette: Soot black + warm brick + amber neon + living green
+       Typography: Playfair Display (hand-painted sign energy) + DM Sans
+       Differentiator: Noise texture grain, warm amber glow, asymmetric layout
+       ══════════════════════════════════════════════════════════════ */
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-soot: #111010;
+      --bg-brick: #1A1615;
+      --bg-card: #221F1D;
+      --bg-elevated: #2B2725;
+      --bg-hover: #342F2C;
+      --border: #3D3532;
+      --border-warm: #4A3F3A;
+
+      --text-primary: #F2E8DE;
+      --text-secondary: #B8A99A;
+      --text-muted: #7A6E63;
+
+      /* Neon amber, like a buzzing sign */
+      --neon-amber: #FFAA33;
+      --neon-amber-bright: #FFD080;
+      --neon-amber-muted: rgba(255, 170, 51, 0.12);
+      --neon-amber-glow: rgba(255, 170, 51, 0.5);
+
+      /* Living green, not neon, more botanical */
+      --plant-green: #7AC47A;
+      --plant-green-bright: #A0E0A0;
+      --plant-green-muted: rgba(122, 196, 122, 0.1);
+      --plant-green-glow: rgba(122, 196, 122, 0.3);
+
+      /* Danger/warning as warm tones */
+      --warm-red: #E06050;
+      --warm-red-bg: rgba(224, 96, 80, 0.12);
+      --warm-gold: #D4A030;
+      --warm-gold-bg: rgba(212, 160, 48, 0.12);
+
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body: 'DM Sans', system-ui, sans-serif;
+
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2rem;
+      --space-2xl: 3rem;
+      --space-3xl: 4rem;
+
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 14px;
+      --radius-full: 9999px;
+    }
+
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      background: var(--bg-soot);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Grain overlay on everything */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+    }
+
+    h1, h2, h3 {
+      font-family: var(--font-display);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; font-family: var(--font-body); border: none; background: none; color: inherit; }
+
+    /* ── LANDING ─────────────────────────────── */
+
+    .landing {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 800px 600px at 30% 70%, rgba(255, 170, 51, 0.06), transparent),
+        radial-gradient(ellipse 600px 500px at 75% 25%, rgba(122, 196, 122, 0.04), transparent),
+        var(--bg-soot);
+      padding: var(--space-2xl);
+    }
+
+    .landing-decor { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+
+    /* Hand-drawn leaf shapes */
+    .decor-leaf { position: absolute; border-radius: 70% 0 70% 0; }
+
+    .decor-leaf-1 {
+      width: 500px; height: 700px;
+      background: linear-gradient(135deg, rgba(122, 196, 122, 0.08), transparent);
+      top: -200px; right: -150px;
+      transform: rotate(-30deg);
+      animation: drift 25s ease-in-out infinite;
+    }
+
+    .decor-leaf-2 {
+      width: 350px; height: 500px;
+      background: linear-gradient(135deg, rgba(255, 170, 51, 0.06), transparent);
+      bottom: -150px; left: -100px;
+      transform: rotate(155deg);
+      animation: drift 30s ease-in-out infinite reverse;
+    }
+
+    .decor-leaf-3 {
+      width: 200px; height: 300px;
+      background: linear-gradient(135deg, rgba(122, 196, 122, 0.05), transparent);
+      top: 40%; left: 5%;
+      transform: rotate(40deg);
+      animation: drift 20s ease-in-out infinite;
+    }
+
+    /* Amber glow orbs, like Edison bulbs in the distance */
+    .decor-circle { position: absolute; border-radius: 50%; }
+
+    .decor-circle-1 {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, var(--neon-amber-glow) 0%, transparent 65%);
+      top: 20%; right: 10%;
+      opacity: 0.12;
+      animation: flicker 4s ease-in-out infinite;
+    }
+
+    .decor-circle-2 {
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, var(--neon-amber-glow) 0%, transparent 65%);
+      bottom: 25%; left: 15%;
+      opacity: 0.08;
+      animation: flicker 5s ease-in-out infinite 1.5s;
+    }
+
+    .landing-content {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      max-width: 620px;
+    }
+
+    .landing-eyebrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-md);
+      font-size: 0.6875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      color: var(--neon-amber);
+      font-weight: 500;
+      font-family: var(--font-body);
+      margin-bottom: var(--space-2xl);
+      animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .eyebrow-line {
+      width: 40px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--neon-amber), transparent);
+    }
+
+    .landing-title {
+      font-family: var(--font-display);
+      font-size: clamp(4rem, 12vw, 8rem);
+      font-weight: 700;
+      font-style: italic;
+      line-height: 0.85;
+      color: var(--text-primary);
+      margin-bottom: var(--space-xl);
+      letter-spacing: -0.04em;
+      animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+      /* Amber neon sign glow */
+      text-shadow:
+        0 0 40px rgba(255, 170, 51, 0.25),
+        0 0 80px rgba(255, 170, 51, 0.1);
+    }
+
+    .landing-subtitle {
+      font-size: 1.0625rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      max-width: 400px;
+      margin: 0 auto var(--space-2xl);
+      font-weight: 300;
+      animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      transition: all 400ms cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--neon-amber);
+      color: var(--bg-soot);
+      padding: var(--space-md) var(--space-2xl);
+      box-shadow:
+        0 0 20px var(--neon-amber-glow),
+        0 4px 16px rgba(0,0,0,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.2);
+    }
+
+    .btn-primary:hover {
+      background: var(--neon-amber-bright);
+      transform: translateY(-2px);
+      box-shadow:
+        0 0 40px var(--neon-amber-glow),
+        0 8px 32px rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.3);
+    }
+
+    .landing-cta {
+      animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both;
+      margin-bottom: var(--space-3xl);
+    }
+
+    .landing-features {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+      animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both;
+    }
+
+    .feature-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      transition: all 300ms;
+    }
+
+    .feature-pill:hover {
+      border-color: var(--neon-amber);
+      color: var(--neon-amber);
+      background: var(--neon-amber-muted);
+      box-shadow: 0 0 12px rgba(255, 170, 51, 0.08);
+    }
+
+    .feature-pill i { color: var(--neon-amber); font-size: 0.6875rem; opacity: 0.7; }
+
+    .landing-footer {
+      position: absolute;
+      bottom: var(--space-xl);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both;
+    }
+
+    /* ── SECTION DIVIDER ────────────────────── */
+
+    .mockup-divider {
+      text-align: center;
+      padding: var(--space-3xl) var(--space-xl);
+      background: var(--bg-soot);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+
+    .mockup-divider h2 {
+      color: var(--neon-amber);
+      font-size: 0.6875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      font-family: var(--font-body);
+      font-weight: 500;
+      text-shadow: 0 0 15px var(--neon-amber-glow);
+    }
+
+    /* ── APP SHELL ──────────────────────────── */
+
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-md) var(--space-2xl);
+      background: rgba(17, 16, 16, 0.9);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(16px) saturate(1.2);
+    }
+
+    .header-logo { display: flex; align-items: center; gap: var(--space-sm); }
+    .logo-leaf { font-size: 1.25rem; }
+    .logo-text {
+      font-family: var(--font-display);
+      font-size: 1.375rem;
+      font-weight: 700;
+      font-style: italic;
+      color: var(--text-primary);
+      letter-spacing: -0.03em;
+      text-shadow: 0 0 20px rgba(255, 170, 51, 0.15);
+    }
+
+    .main-nav { display: flex; gap: 2px; }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      transition: all 200ms;
+      letter-spacing: 0.01em;
+    }
+
+    .nav-link:hover {
+      color: var(--text-primary);
+      background: var(--bg-hover);
+    }
+
+    .nav-link.active {
+      color: var(--neon-amber);
+      background: var(--neon-amber-muted);
+      font-weight: 500;
+    }
+
+    .nav-link i { font-size: 0.8125rem; }
+
+    .header-user { display: flex; align-items: center; gap: var(--space-sm); }
+    .user-info { display: flex; align-items: center; gap: var(--space-sm); }
+
+    .user-avatar {
+      width: 30px; height: 30px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+    }
+
+    .user-name {
+      font-size: 0.8125rem;
+      font-weight: 400;
+      color: var(--text-muted);
+    }
+
+    .btn-icon {
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      transition: all 200ms;
+    }
+
+    .btn-icon:hover { background: var(--bg-hover); color: var(--text-primary); }
+
+    .main-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: var(--space-2xl) var(--space-xl);
+      background: var(--bg-soot);
+      min-height: 80vh;
+    }
+
+    /* ── DASHBOARD ──────────────────────────── */
+
+    .dashboard-header {
+      margin-bottom: var(--space-2xl);
+      padding-bottom: var(--space-xl);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dashboard-greeting {
+      font-size: 2rem;
+      font-weight: 700;
+      font-style: italic;
+      margin-bottom: 4px;
+      color: var(--text-primary);
+    }
+
+    .dashboard-date {
+      color: var(--text-muted);
+      font-size: 0.8125rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .dash-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-md);
+      margin-bottom: var(--space-2xl);
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-lg) var(--space-md);
+      transition: all 300ms;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--border-warm);
+    }
+
+    .stat-card:hover {
+      border-color: var(--border-warm);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .stat-number {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 3rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 4px;
+      color: var(--text-primary);
+    }
+
+    .stat-label-text {
+      font-size: 0.6875rem;
+      color: var(--text-muted);
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .stat-thirsty::before { background: var(--warm-red); }
+    .stat-thirsty .stat-number {
+      color: var(--warm-red);
+    }
+
+    .stat-happy::before { background: var(--plant-green); }
+    .stat-happy .stat-number {
+      color: var(--plant-green);
+      text-shadow: 0 0 30px var(--plant-green-glow);
+    }
+
+    /* Attention section */
+    .dash-section { margin-bottom: var(--space-2xl); }
+
+    .dash-section-title {
+      font-family: var(--font-body);
+      font-size: 0.6875rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-md);
+      color: var(--text-muted);
+    }
+
+    .attention-list { display: flex; flex-direction: column; gap: 6px; }
+
+    .attention-card {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      padding: 14px 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 3px solid transparent;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 200ms;
+    }
+
+    .attention-card:hover {
+      border-left-color: var(--neon-amber);
+      background: var(--bg-elevated);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+
+    .attention-status {
+      width: 28px; height: 28px;
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.6875rem;
+      flex-shrink: 0;
+    }
+
+    .attention-info { flex: 1; min-width: 0; }
+    .attention-name {
+      display: block;
+      font-weight: 500;
+      font-size: 0.9375rem;
+      color: var(--text-primary);
+    }
+    .attention-species {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-style: italic;
+      font-family: var(--font-display);
+    }
+    .attention-meta { text-align: right; display: flex; flex-direction: column; gap: 2px; }
+    .attention-room {
+      font-size: 0.6875rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .attention-days { font-size: 0.8125rem; font-weight: 500; }
+
+    .status-overdue { color: var(--warm-red); background: var(--warm-red-bg); }
+    .status-due { color: var(--warm-gold); background: var(--warm-gold-bg); }
+    .status-happy { color: var(--plant-green); background: var(--plant-green-muted); }
+
+    /* ── PLANTS GRID ────────────────────────── */
+
+    .plants-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: var(--space-xl);
+      padding-bottom: var(--space-lg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .plants-title {
+      font-size: 2rem;
+      font-weight: 700;
+      font-style: italic;
+    }
+
+    .plants-subtitle {
+      margin-top: 2px;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      font-weight: 300;
+    }
+
+    .plants-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: var(--space-xl);
+    }
+
+    .filter-chip {
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      border: 1px solid var(--border);
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 200ms;
+      letter-spacing: 0.02em;
+    }
+
+    .filter-chip:hover {
+      border-color: var(--border-warm);
+      color: var(--text-primary);
+    }
+
+    .filter-chip.active {
+      background: var(--neon-amber);
+      border-color: var(--neon-amber);
+      color: var(--bg-soot);
+      font-weight: 500;
+      box-shadow: 0 0 16px rgba(255, 170, 51, 0.2);
+    }
+
+    .plants-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: var(--space-md);
+    }
+
+    .plant-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 350ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .plant-card:hover {
+      transform: translateY(-6px) rotate(-0.5deg);
+      box-shadow:
+        0 16px 48px rgba(0,0,0,0.4),
+        0 0 30px rgba(255, 170, 51, 0.04);
+      border-color: var(--border-warm);
+    }
+
+    .card-photo-wrap {
+      position: relative;
+      width: 100%;
+      padding-top: 75%;
+      overflow: hidden;
+      background: var(--bg-elevated);
+    }
+
+    .card-photo-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(ellipse at 30% 40%, rgba(255, 170, 51, 0.06), transparent 60%),
+        linear-gradient(160deg, var(--bg-elevated), var(--bg-card));
+    }
+
+    .placeholder-emoji {
+      font-size: 3.5rem;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+    }
+
+    .card-status-badge {
+      position: absolute;
+      top: 10px; right: 10px;
+      width: 26px; height: 26px;
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.6875rem;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .card-body { padding: 14px 16px 16px; }
+
+    .card-name {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 600;
+      font-style: italic;
+      margin-bottom: 2px;
+      letter-spacing: -0.01em;
+    }
+
+    .card-species {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-style: normal;
+      margin-bottom: var(--space-sm);
+      letter-spacing: 0.02em;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      font-size: 0.75rem;
+    }
+
+    .card-room {
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .card-watered {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--neon-amber);
+      color: var(--neon-amber);
+    }
+
+    .dash-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ── ANIMATIONS ─────────────────────────── */
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translate(0, 0) rotate(-30deg); }
+      33% { transform: translate(10px, -15px) rotate(-27deg); }
+      66% { transform: translate(-5px, -8px) rotate(-32deg); }
+    }
+
+    @keyframes flicker {
+      0%, 100% { opacity: 0.12; }
+      20% { opacity: 0.14; }
+      40% { opacity: 0.10; }
+      60% { opacity: 0.15; }
+      80% { opacity: 0.11; }
+    }
+
+    /* ── RESPONSIVE ─────────────────────────── */
+    @media (max-width: 768px) {
+      .dash-stats { grid-template-columns: 1fr; }
+      .plants-grid { grid-template-columns: 1fr; }
+      .app-header { padding: var(--space-md); flex-wrap: wrap; gap: var(--space-sm); }
+      .main-content { padding: var(--space-lg); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════
+     LANDING PAGE
+     ════════════════════════════════════════════════════════ -->
+<div class="landing">
+  <div class="landing-decor">
+    <div class="decor-leaf decor-leaf-1"></div>
+    <div class="decor-leaf decor-leaf-2"></div>
+    <div class="decor-leaf decor-leaf-3"></div>
+    <div class="decor-circle decor-circle-1"></div>
+    <div class="decor-circle decor-circle-2"></div>
+  </div>
+
+  <div class="landing-content">
+    <div class="landing-eyebrow">
+      <span class="eyebrow-line"></span>
+      <span>a better way to care</span>
+      <span class="eyebrow-line"></span>
+    </div>
+
+    <h1 class="landing-title">Sill</h1>
+
+    <p class="landing-subtitle">
+      Your plants deserve more than guesswork.
+      Track watering, schedule long-term care,
+      diagnose problems, and watch your green family thrive.
+    </p>
+
+    <button class="btn btn-primary landing-cta">
+      <i class="fab fa-google"></i>
+      <span>Continue with Google</span>
+    </button>
+
+    <div class="landing-features">
+      <div class="feature-pill"><i class="fas fa-droplet"></i><span>Watering</span></div>
+      <div class="feature-pill"><i class="fas fa-calendar-check"></i><span>Care schedules</span></div>
+      <div class="feature-pill"><i class="fas fa-stethoscope"></i><span>Plant doctor</span></div>
+      <div class="feature-pill"><i class="fas fa-camera-retro"></i><span>Growth journal</span></div>
+    </div>
+  </div>
+
+  <footer class="landing-footer">
+    <p>made with 🌱 for plant parents everywhere</p>
+  </footer>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════
+     DASHBOARD
+     ════════════════════════════════════════════════════════ -->
+<div class="mockup-divider"><h2>Dashboard View</h2></div>
+
+<header class="app-header">
+  <a class="header-logo">
+    <span class="logo-leaf">🌿</span>
+    <span class="logo-text">Sill</span>
+  </a>
+  <nav class="main-nav">
+    <a class="nav-link active"><i class="fas fa-th-large"></i><span>Dashboard</span></a>
+    <a class="nav-link"><i class="fas fa-seedling"></i><span>My Plants</span></a>
+    <a class="nav-link"><i class="fas fa-heart"></i><span>Wishlist</span></a>
+  </nav>
+  <div class="header-user">
+    <div class="user-info">
+      <div class="user-avatar"></div>
+      <span class="user-name">Plant Parent</span>
+    </div>
+    <button class="btn-icon"><i class="fas fa-sign-out-alt"></i></button>
+  </div>
+</header>
+
+<main class="main-content">
+  <div class="dashboard">
+    <div class="dashboard-header">
+      <h2 class="dashboard-greeting">Good afternoon, Anna 🌱</h2>
+      <p class="dashboard-date">Monday, April 6</p>
+    </div>
+
+    <div class="dash-stats">
+      <div class="stat-card">
+        <span class="stat-number">12</span>
+        <span class="stat-label-text">Total plants</span>
+      </div>
+      <div class="stat-card stat-thirsty">
+        <span class="stat-number">3</span>
+        <span class="stat-label-text">Need water</span>
+      </div>
+      <div class="stat-card stat-happy">
+        <span class="stat-number">9</span>
+        <span class="stat-label-text">Happy</span>
+      </div>
+    </div>
+
+    <div class="dash-section">
+      <h3 class="dash-section-title">
+        <i class="fas fa-droplet" style="color: var(--warm-red);"></i>
+        Needs water now
+      </h3>
+      <div class="attention-list">
+        <div class="attention-card">
+          <div class="attention-status status-overdue"><i class="fas fa-exclamation"></i></div>
+          <div class="attention-info">
+            <span class="attention-name">Fern Gully</span>
+            <span class="attention-species">Boston Fern</span>
+          </div>
+          <div class="attention-meta">
+            <span class="attention-room">Living Room</span>
+            <span class="attention-days status-overdue">5d ago</span>
+          </div>
+        </div>
+        <div class="attention-card">
+          <div class="attention-status status-due"><i class="fas fa-droplet"></i></div>
+          <div class="attention-info">
+            <span class="attention-name">Monty</span>
+            <span class="attention-species">Monstera Deliciosa</span>
+          </div>
+          <div class="attention-meta">
+            <span class="attention-room">Bedroom</span>
+            <span class="attention-days status-due">3d ago</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-section">
+      <div class="dash-section-header">
+        <h3 class="dash-section-title">
+          <i class="fas fa-seedling" style="color: var(--plant-green);"></i>
+          Your plants
+        </h3>
+        <button class="btn btn-secondary">View all</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+
+<!-- ════════════════════════════════════════════════════════
+     MY PLANTS
+     ════════════════════════════════════════════════════════ -->
+<div class="mockup-divider"><h2>My Plants View</h2></div>
+
+<header class="app-header">
+  <a class="header-logo">
+    <span class="logo-leaf">🌿</span>
+    <span class="logo-text">Sill</span>
+  </a>
+  <nav class="main-nav">
+    <a class="nav-link"><i class="fas fa-th-large"></i><span>Dashboard</span></a>
+    <a class="nav-link active"><i class="fas fa-seedling"></i><span>My Plants</span></a>
+    <a class="nav-link"><i class="fas fa-heart"></i><span>Wishlist</span></a>
+  </nav>
+  <div class="header-user">
+    <div class="user-info">
+      <div class="user-avatar"></div>
+      <span class="user-name">Plant Parent</span>
+    </div>
+    <button class="btn-icon"><i class="fas fa-sign-out-alt"></i></button>
+  </div>
+</header>
+
+<main class="main-content">
+  <div class="plants-header">
+    <div>
+      <h2 class="plants-title">My Plants</h2>
+      <p class="plants-subtitle">Your green family, all in one place</p>
+    </div>
+    <button class="btn btn-primary"><i class="fas fa-plus"></i><span>Add Plant</span></button>
+  </div>
+
+  <div class="plants-filters">
+    <button class="filter-chip active">All (12)</button>
+    <button class="filter-chip">Living Room (4)</button>
+    <button class="filter-chip">Bedroom (3)</button>
+    <button class="filter-chip">Kitchen (3)</button>
+    <button class="filter-chip">Bathroom (2)</button>
+  </div>
+
+  <div class="plants-grid">
+    <div class="plant-card">
+      <div class="card-photo-wrap">
+        <div class="card-photo-placeholder"><span class="placeholder-emoji">🪴</span></div>
+        <div class="card-status-badge status-overdue"><i class="fas fa-exclamation"></i></div>
+      </div>
+      <div class="card-body">
+        <h3 class="card-name">Monty</h3>
+        <p class="card-species">Monstera Deliciosa</p>
+        <div class="card-meta">
+          <span class="card-room"><i class="fas fa-location-dot"></i> Bedroom</span>
+          <span class="card-watered status-overdue"><i class="fas fa-droplet"></i> 5d ago</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="plant-card">
+      <div class="card-photo-wrap">
+        <div class="card-photo-placeholder"><span class="placeholder-emoji">🌿</span></div>
+        <div class="card-status-badge status-happy"><i class="fas fa-check"></i></div>
+      </div>
+      <div class="card-body">
+        <h3 class="card-name">Fern Gully</h3>
+        <p class="card-species">Boston Fern</p>
+        <div class="card-meta">
+          <span class="card-room"><i class="fas fa-location-dot"></i> Living Room</span>
+          <span class="card-watered status-happy"><i class="fas fa-droplet"></i> Today</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="plant-card">
+      <div class="card-photo-wrap">
+        <div class="card-photo-placeholder"><span class="placeholder-emoji">🌵</span></div>
+        <div class="card-status-badge status-happy"><i class="fas fa-check"></i></div>
+      </div>
+      <div class="card-body">
+        <h3 class="card-name">Spike</h3>
+        <p class="card-species">Prickly Pear Cactus</p>
+        <div class="card-meta">
+          <span class="card-room"><i class="fas fa-location-dot"></i> Kitchen</span>
+          <span class="card-watered status-happy"><i class="fas fa-droplet"></i> 2d ago</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="plant-card">
+      <div class="card-photo-wrap">
+        <div class="card-photo-placeholder"><span class="placeholder-emoji">🍃</span></div>
+        <div class="card-status-badge status-due"><i class="fas fa-droplet"></i></div>
+      </div>
+      <div class="card-body">
+        <h3 class="card-name">Ivy League</h3>
+        <p class="card-species">English Ivy</p>
+        <div class="card-meta">
+          <span class="card-room"><i class="fas fa-location-dot"></i> Bathroom</span>
+          <span class="card-watered status-due"><i class="fas fa-droplet"></i> 4d ago</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

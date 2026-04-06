@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sill — Mockup B: Neon Botanica</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    /* ══════════════════════════════════════════════════════════════
+       MOCKUP B: NEON BOTANICA
+       Concept: A moody editorial magazine about houseplants.
+       Think Kinfolk meets a neon-lit cocktail bar. Dramatic serif
+       typography, generous whitespace, cool-toned dark, with
+       electric accents that pop like gallery lighting.
+
+       Palette: Cool obsidian + muted sage + electric lime accent
+       Typography: Cormorant Garamond (editorial elegance) + Syne (modern geometric)
+       Differentiator: Editorial asymmetry, dramatic scale contrast,
+       thin rule lines, oversized numbers
+       ══════════════════════════════════════════════════════════════ */
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-obsidian: #0C0C0E;
+      --bg-slate: #131317;
+      --bg-card: #1A1A20;
+      --bg-elevated: #22222A;
+      --bg-hover: #2A2A34;
+      --border: #2D2D38;
+      --border-accent: #3A3A48;
+
+      --text-primary: #EEEEF0;
+      --text-secondary: #A0A0AD;
+      --text-muted: #606070;
+
+      /* Electric lime, like gallery accent lighting */
+      --accent: #CDFF50;
+      --accent-dim: #B8E640;
+      --accent-muted: rgba(205, 255, 80, 0.1);
+      --accent-glow: rgba(205, 255, 80, 0.35);
+
+      /* Muted sage for secondary elements */
+      --sage: #8B9E7E;
+      --sage-muted: rgba(139, 158, 126, 0.1);
+
+      /* Warm coral for urgency */
+      --coral: #FF7066;
+      --coral-bg: rgba(255, 112, 102, 0.1);
+      --gold: #E8C84A;
+      --gold-bg: rgba(232, 200, 74, 0.1);
+      --mint: #66E8B0;
+      --mint-bg: rgba(102, 232, 176, 0.08);
+
+      --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
+      --font-body: 'Syne', system-ui, sans-serif;
+
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2rem;
+      --space-2xl: 3rem;
+      --space-3xl: 4rem;
+      --space-4xl: 6rem;
+
+      --radius-sm: 3px;
+      --radius-md: 6px;
+      --radius-lg: 10px;
+      --radius-full: 9999px;
+    }
+
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      background: var(--bg-obsidian);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    h1, h2, h3 {
+      font-family: var(--font-display);
+      line-height: 1.1;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; font-family: var(--font-body); border: none; background: none; color: inherit; }
+
+    /* ── LANDING ─────────────────────────────── */
+
+    .landing {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      background: var(--bg-obsidian);
+      padding: var(--space-2xl);
+    }
+
+    /* Diagonal accent line across the page */
+    .landing::before {
+      content: '';
+      position: absolute;
+      width: 200%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 20%, var(--accent) 50%, transparent 80%);
+      top: 30%;
+      left: -50%;
+      transform: rotate(-8deg);
+      opacity: 0.07;
+    }
+
+    .landing::after {
+      content: '';
+      position: absolute;
+      width: 200%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 30%, var(--sage) 50%, transparent 70%);
+      bottom: 35%;
+      left: -50%;
+      transform: rotate(5deg);
+      opacity: 0.05;
+    }
+
+    .landing-decor { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+
+    .decor-leaf { position: absolute; border-radius: 70% 0 70% 0; }
+
+    .decor-leaf-1 {
+      width: 600px; height: 800px;
+      background: linear-gradient(180deg, rgba(139, 158, 126, 0.04), transparent);
+      top: -300px; right: -200px;
+      transform: rotate(-20deg);
+      animation: sway 30s ease-in-out infinite;
+    }
+
+    .decor-leaf-2 {
+      width: 400px; height: 600px;
+      background: linear-gradient(180deg, rgba(205, 255, 80, 0.03), transparent);
+      bottom: -250px; left: -150px;
+      transform: rotate(170deg);
+      animation: sway 35s ease-in-out infinite reverse;
+    }
+
+    .decor-leaf-3 { display: none; }
+
+    /* Accent dot */
+    .decor-circle {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid;
+    }
+
+    .decor-circle-1 {
+      width: 8px; height: 8px;
+      background: var(--accent);
+      border: none;
+      top: 22%; right: 18%;
+      box-shadow: 0 0 20px var(--accent-glow);
+      animation: blink 3s ease-in-out infinite;
+    }
+
+    .decor-circle-2 {
+      width: 6px; height: 6px;
+      background: var(--sage);
+      border: none;
+      bottom: 28%; left: 22%;
+      opacity: 0.5;
+      animation: blink 4s ease-in-out infinite 1s;
+    }
+
+    .landing-content {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+    }
+
+    .landing-eyebrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-lg);
+      font-size: 0.625rem;
+      text-transform: uppercase;
+      letter-spacing: 0.4em;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-family: var(--font-body);
+      margin-bottom: var(--space-3xl);
+      animation: fadeIn 1.2s ease both;
+    }
+
+    .eyebrow-line {
+      width: 50px;
+      height: 1px;
+      background: var(--border-accent);
+    }
+
+    .landing-title {
+      font-family: var(--font-display);
+      font-size: clamp(5rem, 15vw, 10rem);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 0.8;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2xl);
+      letter-spacing: -0.04em;
+      animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+    }
+
+    /* Accent underline under the title */
+    .landing-title::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 2px;
+      background: var(--accent);
+      margin: var(--space-lg) auto 0;
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .landing-subtitle {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      max-width: 420px;
+      margin: 0 auto var(--space-2xl);
+      animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-family: var(--font-body);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: all 400ms cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: transparent;
+      color: var(--accent);
+      padding: 14px 36px;
+      border: 1px solid var(--accent);
+      border-radius: 0;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent);
+      color: var(--bg-obsidian);
+      box-shadow: 0 0 30px var(--accent-glow);
+      transform: translateY(-1px);
+    }
+
+    .landing-cta {
+      animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both;
+      margin-bottom: var(--space-3xl);
+    }
+
+    .landing-features {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--space-lg);
+      animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both;
+    }
+
+    .feature-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-body);
+      font-size: 0.625rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 300ms;
+      /* No border, no background, just text */
+    }
+
+    .feature-pill:hover {
+      color: var(--accent);
+    }
+
+    .feature-pill i {
+      color: var(--sage);
+      font-size: 0.5625rem;
+      transition: color 300ms;
+    }
+
+    .feature-pill:hover i { color: var(--accent); }
+
+    .landing-footer {
+      position: absolute;
+      bottom: var(--space-xl);
+      font-size: 0.625rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 500;
+      animation: fadeIn 1.2s ease 1s both;
+    }
+
+    /* ── SECTION DIVIDER ────────────────────── */
+
+    .mockup-divider {
+      text-align: center;
+      padding: var(--space-4xl) var(--space-xl);
+      background: var(--bg-obsidian);
+      border-top: 1px solid var(--border);
+    }
+
+    .mockup-divider h2 {
+      color: var(--accent);
+      font-size: 0.5625rem;
+      text-transform: uppercase;
+      letter-spacing: 0.4em;
+      font-family: var(--font-body);
+      font-weight: 600;
+    }
+
+    /* ── APP SHELL ──────────────────────────── */
+
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-md) var(--space-2xl);
+      background: var(--bg-obsidian);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-logo { display: flex; align-items: center; gap: var(--space-sm); }
+    .logo-leaf { font-size: 1rem; }
+    .logo-text {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text-primary);
+      letter-spacing: -0.03em;
+    }
+
+    .main-nav { display: flex; gap: 0; }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: 10px 18px;
+      font-family: var(--font-body);
+      font-size: 0.6875rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      transition: all 200ms;
+      border-bottom: 2px solid transparent;
+    }
+
+    .nav-link:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-link.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .nav-link i { font-size: 0.75rem; }
+
+    .header-user { display: flex; align-items: center; gap: var(--space-sm); }
+    .user-info { display: flex; align-items: center; gap: var(--space-sm); }
+
+    .user-avatar {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+    }
+
+    .user-name {
+      font-size: 0.6875rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .btn-icon {
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted);
+      transition: all 200ms;
+      font-size: 0.75rem;
+    }
+
+    .btn-icon:hover { color: var(--text-primary); }
+
+    .main-content {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: var(--space-3xl) var(--space-xl);
+      background: var(--bg-obsidian);
+      min-height: 80vh;
+    }
+
+    /* ── DASHBOARD ──────────────────────────── */
+
+    .dashboard-header {
+      margin-bottom: var(--space-3xl);
+    }
+
+    .dashboard-greeting {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      font-weight: 300;
+      font-style: italic;
+      margin-bottom: 6px;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+
+    .dashboard-date {
+      color: var(--text-muted);
+      font-size: 0.625rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .dash-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      margin-bottom: var(--space-3xl);
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .stat-card {
+      background: var(--bg-slate);
+      padding: var(--space-xl) var(--space-lg);
+      transition: all 300ms;
+    }
+
+    .stat-card:hover {
+      background: var(--bg-card);
+    }
+
+    .stat-number {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 4rem;
+      font-weight: 300;
+      line-height: 1;
+      margin-bottom: 6px;
+      color: var(--text-primary);
+      letter-spacing: -0.03em;
+    }
+
+    .stat-label-text {
+      font-family: var(--font-body);
+      font-size: 0.5625rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    .stat-thirsty .stat-number {
+      color: var(--coral);
+    }
+
+    .stat-happy .stat-number {
+      color: var(--mint);
+      text-shadow: 0 0 40px rgba(102, 232, 176, 0.15);
+    }
+
+    /* Attention section */
+    .dash-section { margin-bottom: var(--space-3xl); }
+
+    .dash-section-title {
+      font-family: var(--font-body);
+      font-size: 0.5625rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-lg);
+      color: var(--text-muted);
+      padding-bottom: var(--space-sm);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .attention-list { display: flex; flex-direction: column; gap: 0; }
+
+    .attention-card {
+      display: flex;
+      align-items: center;
+      gap: var(--space-lg);
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 250ms;
+    }
+
+    .attention-card:hover {
+      padding-left: 12px;
+      background: linear-gradient(90deg, var(--accent-muted), transparent 60%);
+    }
+
+    .attention-status {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.625rem;
+      flex-shrink: 0;
+    }
+
+    .attention-info { flex: 1; min-width: 0; }
+    .attention-name {
+      display: block;
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 1.125rem;
+      font-style: italic;
+      color: var(--text-primary);
+    }
+    .attention-species {
+      display: block;
+      font-size: 0.625rem;
+      color: var(--text-muted);
+      font-family: var(--font-body);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+    .attention-meta { text-align: right; display: flex; flex-direction: column; gap: 2px; }
+    .attention-room {
+      font-size: 0.5625rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+    }
+    .attention-days { font-size: 0.8125rem; font-weight: 600; }
+
+    .status-overdue { color: var(--coral); background: var(--coral-bg); }
+    .status-due { color: var(--gold); background: var(--gold-bg); }
+    .status-happy { color: var(--mint); background: var(--mint-bg); }
+
+    /* ── PLANTS GRID ────────────────────────── */
+
+    .plants-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: var(--space-2xl);
+    }
+
+    .plants-title {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      font-weight: 300;
+      font-style: italic;
+      letter-spacing: -0.02em;
+    }
+
+    .plants-subtitle {
+      margin-top: 4px;
+      font-size: 0.625rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .plants-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+      margin-bottom: var(--space-2xl);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .filter-chip {
+      padding: 10px 16px;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      font-family: var(--font-body);
+      font-size: 0.625rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 200ms;
+    }
+
+    .filter-chip:hover {
+      color: var(--text-primary);
+    }
+
+    .filter-chip.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .plants-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .plant-card {
+      background: var(--bg-slate);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 400ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .plant-card:hover {
+      background: var(--bg-card);
+      z-index: 2;
+      box-shadow: 0 0 40px rgba(205, 255, 80, 0.04);
+    }
+
+    .card-photo-wrap {
+      position: relative;
+      width: 100%;
+      padding-top: 80%;
+      overflow: hidden;
+      background: var(--bg-card);
+    }
+
+    .card-photo-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, var(--bg-card), var(--bg-elevated));
+    }
+
+    .placeholder-emoji {
+      font-size: 3rem;
+      filter: grayscale(0.3) contrast(1.1);
+      transition: filter 300ms;
+    }
+
+    .plant-card:hover .placeholder-emoji {
+      filter: grayscale(0) contrast(1);
+    }
+
+    .card-status-badge {
+      position: absolute;
+      bottom: 10px; left: 10px;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.5625rem;
+    }
+
+    .card-body { padding: 14px 16px 18px; }
+
+    .card-name {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 400;
+      font-style: italic;
+      margin-bottom: 2px;
+      letter-spacing: -0.01em;
+    }
+
+    .card-species {
+      font-family: var(--font-body);
+      font-size: 0.5625rem;
+      color: var(--text-muted);
+      margin-bottom: var(--space-md);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.625rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+
+    .card-room {
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .card-room i { font-size: 0.5rem; }
+
+    .card-watered {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .card-watered i { font-size: 0.5rem; }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      font-size: 0.5625rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 600;
+      border-radius: 0;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .dash-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ── ANIMATIONS ─────────────────────────── */
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes sway {
+      0%, 100% { transform: translate(0, 0) rotate(-20deg); }
+      50% { transform: translate(0, -12px) rotate(-18deg); }
+    }
+
+    @keyframes blink {
+      0%, 90%, 100% { opacity: 1; }
+      95% { opacity: 0.2; }
+    }
+
+    /* ── RESPONSIVE ─────────────────────────── */
+    @media (max-width: 768px) {
+      .dash-stats { grid-template-columns: 1fr; }
+      .plants-grid { grid-template-columns: 1fr; }
+      .app-header { padding: var(--space-md); flex-wrap: wrap; gap: var(--space-sm); }
+      .main-content { padding: var(--space-lg); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════
+     LANDING PAGE
+     ════════════════════════════════════════════════════════ -->
+<div class="landing">
+  <div class="landing-decor">
+    <div class="decor-leaf decor-leaf-1"></div>
+    <div class="decor-leaf decor-leaf-2"></div>
+    <div class="decor-leaf decor-leaf-3"></div>
+    <div class="decor-circle decor-circle-1"></div>
+    <div class="decor-circle decor-circle-2"></div>
+  </div>
+
+  <div class="landing-content">
+    <div class="landing-eyebrow">
+      <span class="eyebrow-line"></span>
+      <span>a better way to care</span>
+      <span class="eyebrow-line"></span>
+    </div>
+
+    <h1 class="landing-title">Sill</h1>
+
+    <p class="landing-subtitle">
+      Your plants deserve more than guesswork.
+      Track watering, schedule long-term care,
+      diagnose problems, and watch your green family thrive.
+    </p>
+
+    <button class="btn btn-primary landing-cta">
+      <i class="fab fa-google"></i>
+      <span>Continue with Google</span>
+    </button>
+
+    <div class="landing-features">
+      <div class="feature-pill"><i class="fas fa-droplet"></i><span>Watering</span></div>
+      <div class="feature-pill"><i class="fas fa-calendar-check"></i><span>Care schedules</span></div>
+      <div class="feature-pill"><i class="fas fa-stethoscope"></i><span>Plant doctor</span></div>
+      <div class="feature-pill"><i class="fas fa-camera-retro"></i><span>Growth journal</span></div>
+    </div>
+  </div>
+
+  <footer class="landing-footer">
+    <p>made with 🌱 for plant parents everywhere</p>
+  </footer>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════
+     DASHBOARD
+     ════════════════════════════════════════════════════════ -->
+<div class="mockup-divider"><h2>Dashboard View</h2></div>
+
+<header class="app-header">
+  <a class="header-logo">
+    <span class="logo-leaf">🌿</span>
+    <span class="logo-text">Sill</span>
+  </a>
+  <nav class="main-nav">
+    <a class="nav-link active"><i class="fas fa-th-large"></i><span>Dashboard</span></a>
+    <a class="nav-link"><i class="fas fa-seedling"></i><span>My Plants</span></a>
+    <a class="nav-link"><i class="fas fa-heart"></i><span>Wishlist</span></a>
+  </nav>
+  <div class="header-user">
+    <div class="user-info">
+      <div class="user-avatar"></div>
+      <span class="user-name">Plant Parent</span>
+    </div>
+    <button class="btn-icon"><i class="fas fa-sign-out-alt"></i></button>
+  </div>
+</header>
+
+<main class="main-content">
+  <div class="dashboard">
+    <div class="dashboard-header">
+      <h2 class="dashboard-greeting">Good afternoon, Anna 🌱</h2>
+      <p class="dashboard-date">Monday, April 6</p>
+    </div>
+
+    <div class="dash-stats">
+      <div class="stat-card">
+        <span class="stat-number">12</span>
+        <span class="stat-label-text">Total plants</span>
+      </div>
+      <div class="stat-card stat-thirsty">
+        <span class="stat-number">3</span>
+        <span class="stat-label-text">Need water</span>
+      </div>
+      <div class="stat-card stat-happy">
+        <span class="stat-number">9</span>
+        <span class="stat-label-text">Happy</span>
+      </div>
+    </div>
+
+    <div class="dash-section">
+      <h3 class="dash-section-title">
+        <i class="fas fa-droplet" style="color: var(--coral);"></i>
+        Needs water now
+      </h3>
+      <div class="attention-list">
+        <div class="attention-card">
+          <div class="attention-status status-overdue"><i class="fas fa-exclamation"></i></div>
+          <div class="attention-info">
+            <span class="attention-name">Fern Gully</span>
+            <span class="attention-species">Boston Fern</span>
+          </div>
+          <div class="attention-meta">
+            <span class="attention-room">Living Room</span>
+            <span class="attention-days status-overdue">5d ago</span>
+          </div>
+        </div>
+        <div class="attention-card">
+          <div class="attention-status status-due"><i class="fas fa-droplet"></i></div>
+          <div class="attention-info">
+            <span class="attention-name">Monty</span>
+            <span class="attention-species">Monstera Deliciosa</span>
+          </div>
+          <div class="attention-meta">
+            <span class="attention-room">Bedroom</span>
+            <span class="attention-days status-due">3d ago</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-section">
+      <div class="dash-section-header">
+        <h3 class="dash-section-title">
+          <i class="fas fa-seedling" style="color: var(--mint);"></i>
+          Your plants
+        </h3>
+        <button class="btn btn-secondary">View all</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+
+<!-- ════════════════════════════════════════════════════════
+     MY PLANTS
+     ════════════════════════════════════════════════════════ -->
+<div class="mockup-divider"><h2>My Plants View</h2></div>
+
+<header class="app-header">
+  <a class="header-logo">
+    <span class="logo-leaf">🌿</span>
+    <span class="logo-text">Sill</span>
+  </a>
+  <nav class="main-nav">
+    <a class="nav-link"><i class="fas fa-th-large"></i><span>Dashboard</span></a>
+    <a class="nav-link active"><i class="fas fa-seedling"></i><span>My Plants</span></a>
+    <a class="nav-link"><i class="fas fa-heart"></i><span>Wishlist</span></a>
+  </nav>
+  <div class="header-user">
+    <div class="user-info">
+      <div class="user-avatar"></div>
+      <span class="user-name">Plant Parent</span>
+    </div>
+    <button class="btn-icon"><i class="fas fa-sign-out-alt"></i></button>
+  </div>
+</header>
+
+<main class="main-content">
+  <div class="plants-header">
+    <div>
+      <h2 class="plants-title">My Plants</h2>
+      <p class="plants-subtitle">Your green family, all in one place</p>
+    </div>
+    <button class="btn btn-primary"><i class="fas fa-plus"></i><span>Add Plant</span></button>
+  </div>
+
+  <div class="plants-filters">
+    <button class="filter-chip active">All (12)</button>
+    <button class="filter-chip">Living Room (4)</button>
+    <button class="filter-chip">Bedroom (3)</button>
+    <button class="filter-chip">Kitchen (3)</button>
+    <button class="filter-chip">Bathroom (2)</button>
+  </div>
+
+  <div class="plants-grid">
+    <div class="plant-card">
+      <div class="card-photo-wrap">
+        <div class="card-photo-placeholder"><span class="placeholder-emoji">🪴</span></div>
+        <div class="card-status-badge status-overdue"><i class="fas fa-exclamation"></i></div>
+      </div>
+      <div class="card-body">
+        <h3 class="card-name">Monty</h3>
+        <p class="card-species">Monstera Deliciosa</p>
+        <div class="card-meta">
+          <span class="card-room"><i class="fas fa-location-dot"></i> Bedroom</span>
+          <span class="card-watered status-overdue"><i class="fas fa-droplet"></i> 5d ago</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="plant-card">
+      <div class="card-photo-wrap">
+        <div class="card-photo-placeholder"><span class="placeholder-emoji">🌿</span></div>
+        <div class="card-status-badge status-happy"><i class="fas fa-check"></i></div>
+      </div>
+      <div class="card-body">
+        <h3 class="card-name">Fern Gully</h3>
+        <p class="card-species">Boston Fern</p>
+        <div class="card-meta">
+          <span class="card-room"><i class="fas fa-location-dot"></i> Living Room</span>
+          <span class="card-watered status-happy"><i class="fas fa-droplet"></i> Today</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="plant-card">
+      <div class="card-photo-wrap">
+        <div class="card-photo-placeholder"><span class="placeholder-emoji">🌵</span></div>
+        <div class="card-status-badge status-happy"><i class="fas fa-check"></i></div>
+      </div>
+      <div class="card-body">
+        <h3 class="card-name">Spike</h3>
+        <p class="card-species">Prickly Pear Cactus</p>
+        <div class="card-meta">
+          <span class="card-room"><i class="fas fa-location-dot"></i> Kitchen</span>
+          <span class="card-watered status-happy"><i class="fas fa-droplet"></i> 2d ago</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="plant-card">
+      <div class="card-photo-wrap">
+        <div class="card-photo-placeholder"><span class="placeholder-emoji">🍃</span></div>
+        <div class="card-status-badge status-due"><i class="fas fa-droplet"></i></div>
+      </div>
+      <div class="card-body">
+        <h3 class="card-name">Ivy League</h3>
+        <p class="card-species">English Ivy</p>
+        <div class="card-meta">
+          <span class="card-room"><i class="fas fa-location-dot"></i> Bathroom</span>
+          <span class="card-watered status-due"><i class="fas fa-droplet"></i> 4d ago</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>
