@@ -105,6 +105,14 @@ function renderDetail(container, plant, user, navigate) {
               </span>
             ` : ''}
           </div>
+          <div class="detail-badges" style="margin-top: var(--space-xs);">
+            <span class="detail-badge">
+              <i class="fas fa-calendar"></i> Acquired: ${plant.dateAcquired || 'Unknown'}
+            </span>
+            <span class="detail-badge">
+              <i class="fas fa-store"></i> From: ${plant.locationAcquired || 'Unknown'}
+            </span>
+          </div>
         </div>
       </div>
 

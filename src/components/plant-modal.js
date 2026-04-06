@@ -78,6 +78,17 @@ export function initPlantModal(userId, onSaved) {
           </div>
         </div>
 
+        <div class="form-row">
+          <div class="form-group">
+            <label for="plant-date-acquired">Date Acquired</label>
+            <input type="date" id="plant-date-acquired">
+          </div>
+          <div class="form-group">
+            <label for="plant-location-acquired">Where I Got It</label>
+            <input type="text" id="plant-location-acquired" placeholder="e.g. Home Depot, gift from mom...">
+          </div>
+        </div>
+
         <div class="form-group">
           <label>Photo</label>
           <div class="photo-upload" id="photo-upload">
@@ -168,6 +179,8 @@ export function initPlantModal(userId, onSaved) {
       document.getElementById('plant-room').value = plant.room || '';
       document.getElementById('plant-watering').value = plant.wateringFrequencyDays || '';
       document.getElementById('plant-notes').value = plant.careNotes || '';
+      document.getElementById('plant-date-acquired').value = plant.dateAcquired || '';
+      document.getElementById('plant-location-acquired').value = plant.locationAcquired === 'Unknown' ? '' : (plant.locationAcquired || '');
 
       if (plant.room) {
         document.querySelectorAll('.room-chip').forEach((c) => {
@@ -224,6 +237,8 @@ export function initPlantModal(userId, onSaved) {
         room: document.getElementById('plant-room').value.trim(),
         wateringFrequencyDays: parseInt(document.getElementById('plant-watering').value) || null,
         careNotes: document.getElementById('plant-notes').value.trim(),
+        dateAcquired: document.getElementById('plant-date-acquired').value || null,
+        locationAcquired: document.getElementById('plant-location-acquired').value.trim() || 'Unknown',
       };
 
       if (editingPlant) {
