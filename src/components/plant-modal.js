@@ -1,4 +1,5 @@
 import { addPlant, updatePlant, uploadPlantPhoto } from '../data/plants.js';
+import { initializeDefaultCareSchedules } from '../data/care.js';
 
 const COMMON_ROOMS = [
   'Living Room',
@@ -250,6 +251,10 @@ export function initPlantModal(userId, onSaved) {
         data.lastWatered = null;
         data.photoURL = null;
         const newId = await addPlant(userId, data);
+
+        // Pre-populate care schedule with all tasks and species-aware frequencies
+        await initializeDefaultCareSchedules(userId, newId, data.species);
+
         if (selectedFile) {
           const photoURL = await uploadPlantPhoto(userId, newId, selectedFile);
           await updatePlant(userId, newId, { photoURL });
