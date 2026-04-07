@@ -88,6 +88,72 @@ export async function markCareDone(userId, plantId, scheduleId, frequencyDays) {
   });
 }
 
+// Species-specific frequency overrides (days).
+// Keys are matched case-insensitively against plant species.
+const SPECIES_CARE_OVERRIDES = {
+  pothos:        { prune: 42, fertilize: 21 },
+  epipremnum:    { prune: 42, fertilize: 21 },
+  tradescantia:  { prune: 28 },
+  monstera:      { prune: 56 },
+  philodendron:  { prune: 56 },
+  basil:         { prune: 14, fertilize: 14 },
+  mint:          { prune: 14, fertilize: 14 },
+  fern:          { prune: 30, clean: 14 },
+  nephrolepis:   { prune: 30, clean: 14 },
+  adiantum:      { prune: 30, clean: 14 },
+  calathea:      { clean: 14, rotate: 7 },
+  maranta:       { clean: 14, rotate: 7 },
+  sansevieria:   { prune: 180, fertilize: 60, rotate: 30 },
+  'snake plant': { prune: 180, fertilize: 60, rotate: 30 },
+  dracaena:      { prune: 120, fertilize: 60 },
+  'zz plant':    { prune: 180, fertilize: 60 },
+  zamioculcas:   { prune: 180, fertilize: 60 },
+  cactus:        { prune: 365, fertilize: 60, clean: 60, rotate: 30 },
+  cacti:         { prune: 365, fertilize: 60, clean: 60, rotate: 30 },
+  succulent:     { prune: 180, fertilize: 60, clean: 60 },
+  echeveria:     { prune: 180, fertilize: 60, clean: 60 },
+  aloe:          { prune: 120, fertilize: 60 },
+  'fiddle leaf':  { prune: 90, clean: 14, rotate: 7 },
+  ficus:         { prune: 90, clean: 14 },
+  rubber:        { prune: 90, clean: 14 },
+  orchid:        { prune: 180, fertilize: 14, repot: 730 },
+  lavender:      { prune: 42, fertilize: 30 },
+  rosemary:      { prune: 42, fertilize: 30 },
+  'spider plant': { prune: 60, fertilize: 21 },
+  chlorophytum:  { prune: 60, fertilize: 21 },
+  peace:         { prune: 60, clean: 14 },
+  spathiphyllum: { prune: 60, clean: 14 },
+};
+
+function getOverridesForSpecies(species) {
+  if (!species) return {};
+  const lower = species.toLowerCase().trim();
+  for (const [key, overrides] of Object.entries(SPECIES_CARE_OVERRIDES)) {
+    if (lower.includes(key)) return overrides;
+  }
+  return {};
+}
+
+export async function initializeDefaultCareSchedules(userId, plantId, species) {
+  const overrides = getOverridesForSpecies(species);
+  const now = new Date();
+
+  const promises = Object.entries(CARE_TYPES).map(([type, meta]) => {
+    const freq = overrides[type] ?? meta.defaultFrequency;
+    const nextDue = new Date(now);
+    nextDue.setDate(nextDue.getDate() + freq);
+
+    return addCareSchedule(userId, plantId, {
+      type,
+      frequencyDays: freq,
+      lastDone: null,
+      nextDue,
+    });
+  });
+
+  await Promise.all(promises);
+}
+
 // Helpers
 export function getCareStatus(schedule) {
   if (!schedule.nextDue) return 'unknown';
