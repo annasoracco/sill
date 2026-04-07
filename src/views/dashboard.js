@@ -1,4 +1,5 @@
 import { getPlants, getWateringMeta, daysSinceWatered, getWateringStatus } from '../data/plants.js';
+import { getJournalEntries } from '../data/journal.js';
 
 export async function renderDashboard(container, user) {
   const greeting = getGreeting();
@@ -21,14 +22,38 @@ export async function renderDashboard(container, user) {
 
   try {
     const plants = await getPlants(user.uid);
-    renderDashboardBody(document.getElementById('dashboard-body'), plants);
+
+    // Check each plant's journal for recent diagnosis issues (last 14 days)
+    const sickPlants = [];
+    const twoWeeksAgo = new Date();
+    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+
+    await Promise.all(plants.map(async (plant) => {
+      try {
+        const entries = await getJournalEntries(user.uid, plant.id);
+        const recentIssue = entries.find((e) => {
+          if (e.type !== 'issue') return false;
+          const entryDate = e.date?.toDate ? e.date.toDate() : new Date(e.date);
+          return entryDate >= twoWeeksAgo;
+        });
+        if (recentIssue) {
+          const diagnosisLine = recentIssue.note?.split('\n')[0] || '';
+          const diagnosis = diagnosisLine.replace(/^Diagnosis:\s*/, '').split('(')[0].trim();
+          sickPlants.push({ ...plant, _diagnosis: diagnosis, _issueDate: recentIssue.date });
+        }
+      } catch (e) {
+        // skip if journal fails for a plant
+      }
+    }));
+
+    renderDashboardBody(document.getElementById('dashboard-body'), plants, sickPlants);
   } catch (err) {
     console.error('Failed to load dashboard:', err);
     renderEmptyState(document.getElementById('dashboard-body'));
   }
 }
 
-function renderDashboardBody(container, plants) {
+function renderDashboardBody(container, plants, sickPlants = []) {
   if (plants.length === 0) {
     renderEmptyState(container);
     return;
@@ -40,7 +65,8 @@ function renderDashboardBody(container, plants) {
   });
 
   const soonPlants = plants.filter((p) => getWateringStatus(p) === 'soon');
-  const happyCount = plants.filter((p) => getWateringStatus(p) === 'happy').length;
+  const sickIds = new Set(sickPlants.map((p) => p.id));
+  const healthyHappyCount = plants.filter((p) => getWateringStatus(p) === 'happy' && !sickIds.has(p.id)).length;
 
   container.innerHTML = `
     <div class="dash-stats">
@@ -48,15 +74,33 @@ function renderDashboardBody(container, plants) {
         <span class="stat-number">${plants.length}</span>
         <span class="stat-label-text">Total plants</span>
       </div>
+      <div class="stat-card stat-happy">
+        <span class="stat-number">${healthyHappyCount}</span>
+        <span class="stat-label-text">Happy</span>
+      </div>
       <div class="stat-card stat-thirsty">
         <span class="stat-number">${thirsty.length}</span>
         <span class="stat-label-text">Need water</span>
       </div>
-      <div class="stat-card stat-happy">
-        <span class="stat-number">${happyCount}</span>
-        <span class="stat-label-text">Happy</span>
-      </div>
+      ${sickPlants.length > 0 ? `
+        <div class="stat-card stat-sick">
+          <span class="stat-number">${sickPlants.length}</span>
+          <span class="stat-label-text">Needs care</span>
+        </div>
+      ` : ''}
     </div>
+
+    ${sickPlants.length > 0 ? `
+      <div class="dash-section">
+        <h3 class="dash-section-title">
+          <i class="fas fa-stethoscope" style="color: var(--danger);"></i>
+          Under the weather
+        </h3>
+        <div class="attention-list">
+          ${sickPlants.map((p) => renderSickCard(p)).join('')}
+        </div>
+      </div>
+    ` : ''}
 
     ${thirsty.length > 0 ? `
       <div class="dash-section">
@@ -82,7 +126,7 @@ function renderDashboardBody(container, plants) {
       </div>
     ` : ''}
 
-    ${thirsty.length === 0 && soonPlants.length === 0 ? `
+    ${thirsty.length === 0 && soonPlants.length === 0 && sickPlants.length === 0 ? `
       <div class="dash-all-good">
         <span class="all-good-emoji">🌿</span>
         <h3>All your plants are happy!</h3>
@@ -107,6 +151,32 @@ function renderDashboardBody(container, plants) {
       window.location.hash = `/plant/${card.dataset.id}`;
     });
   });
+  container.querySelectorAll('.sick-card').forEach((card) => {
+    card.addEventListener('click', () => {
+      window.location.hash = `/plant/${card.dataset.id}`;
+    });
+  });
+}
+
+function renderSickCard(plant) {
+  const issueDate = plant._issueDate?.toDate ? plant._issueDate.toDate() : new Date(plant._issueDate);
+  const daysAgo = Math.floor((new Date() - issueDate) / (1000 * 60 * 60 * 24));
+  const dateText = daysAgo === 0 ? 'Today' : daysAgo === 1 ? 'Yesterday' : `${daysAgo}d ago`;
+
+  return `
+    <div class="attention-card sick-card" data-id="${plant.id}">
+      <div class="attention-status status-sick">
+        <i class="fas fa-stethoscope"></i>
+      </div>
+      <div class="attention-info">
+        <span class="attention-name">${plant.name}</span>
+        <span class="attention-species">${plant._diagnosis || 'Diagnosed issue'}</span>
+      </div>
+      <div class="attention-meta">
+        <span class="attention-days status-sick">${dateText}</span>
+      </div>
+    </div>
+  `;
 }
 
 function renderAttentionCard(plant) {

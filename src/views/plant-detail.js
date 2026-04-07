@@ -16,6 +16,7 @@ import {
   formatEntryDate,
   ENTRY_TYPES,
 } from '../data/journal.js';
+import { diagnosePlant } from '../data/diagnosis.js';
 
 export async function renderPlantDetail(container, user, plantId, navigate) {
   container.innerHTML = `
@@ -126,6 +127,17 @@ function renderDetail(container, plant, user, navigate) {
                 <span class="stat-label">Frequency</span>
                 <span class="stat-value">${plant.wateringFrequencyDays ? `Every ${plant.wateringFrequencyDays} days` : 'Not set'}</span>
               </div>
+              ${plant.wateringFrequencyDays && days !== null ? `
+                <div class="watering-stat">
+                  <span class="stat-label">Next watering</span>
+                  <span class="stat-value">${(() => {
+                    const daysUntil = plant.wateringFrequencyDays - days;
+                    if (daysUntil <= 0) return 'Now!';
+                    if (daysUntil === 1) return 'Tomorrow';
+                    return `In ${daysUntil} days`;
+                  })()}</span>
+                </div>
+              ` : ''}
             </div>
             <button class="btn btn-primary water-now-btn" id="water-now-btn">
               <i class="fas fa-droplet"></i>
@@ -145,6 +157,19 @@ function renderDetail(container, plant, user, navigate) {
             <div class="loading-state" style="padding: var(--space-md);">
               <div class="loading-spinner"></div>
             </div>
+          </div>
+        </div>
+
+        <div class="detail-card doctor-card">
+          <div class="detail-card-header">
+            <h3><i class="fas fa-stethoscope"></i> Plant Doctor</h3>
+          </div>
+          <div class="detail-card-body">
+            <p class="doctor-tagline">Something look off? Snap a photo and let AI diagnose the issue.</p>
+            <button class="btn btn-primary" id="open-doctor-btn">
+              <i class="fas fa-camera"></i>
+              Diagnose from Photo
+            </button>
           </div>
         </div>
       </div>
@@ -244,14 +269,92 @@ function renderDetail(container, plant, user, navigate) {
         </form>
       </div>
     </div>
+
+    <div class="modal-overlay" id="doctor-modal-overlay">
+      <div class="modal doctor-modal">
+        <div class="modal-header">
+          <h2><i class="fas fa-stethoscope"></i> Plant Doctor</h2>
+          <button class="btn-icon modal-close" id="doctor-modal-close">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div id="doctor-modal-content">
+          <form class="modal-form" id="doctor-form">
+            <div class="form-group">
+              <label>Upload a photo of the issue</label>
+              <div class="doctor-photo-section">
+                ${plant.photoURL ? `
+                  <div class="doctor-existing-photo">
+                    <img src="${plant.photoURL}" alt="${plant.name}" class="doctor-preview-img" id="doctor-photo-preview">
+                    <p class="doctor-photo-hint">Using your plant's current photo, or upload a new one below</p>
+                  </div>
+                ` : `
+                  <img id="doctor-photo-preview" class="doctor-preview-img" style="display: none;">
+                `}
+                <div class="photo-upload">
+                  <div class="photo-upload-area" id="doctor-upload-area">
+                    <i class="fas fa-camera"></i>
+                    <span>${plant.photoURL ? 'Upload a different photo' : 'Take or upload a photo'}</span>
+                  </div>
+                  <input type="file" id="doctor-photo-input" accept="image/*" hidden>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="doctor-description">What's going on? (optional)</label>
+              <textarea id="doctor-description" rows="2" placeholder="e.g. The leaves in the back are turning yellow and brown..."></textarea>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" id="doctor-cancel">Cancel</button>
+              <button type="submit" class="btn btn-primary" id="doctor-submit">
+                <i class="fas fa-stethoscope"></i> Diagnose
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   `;
 
   // Load care schedules and journal
   loadCareSchedules(user.uid, plant, navigate, container);
   loadJournal(user.uid, plant);
 
-  // Water now
+  // Water now - with smart warnings
   document.getElementById('water-now-btn').addEventListener('click', async () => {
+    const status = meta.label;
+    const daysAgo = daysSinceWatered(plant);
+    const freq = plant.wateringFrequencyDays;
+
+    // Warn if recently watered or not due
+    if (daysAgo !== null && freq) {
+      const daysUntilDue = freq - daysAgo;
+      if (daysAgo === 0) {
+        if (!confirm(`You already watered ${plant.name} today. Are you sure you want to log another watering?`)) return;
+      } else if (daysUntilDue > 2) {
+        if (!confirm(`${plant.name} was watered ${daysAgo} day${daysAgo !== 1 ? 's' : ''} ago and doesn't need water for another ${daysUntilDue} days. Water anyway?`)) return;
+      }
+    }
+
+    // Warn if diagnosed with overwatering
+    try {
+      const entries = await getJournalEntries(user.uid, plant.id);
+      const twoWeeksAgo = new Date();
+      twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+      const recentOverwatering = entries.find((e) => {
+        if (e.type !== 'issue') return false;
+        const entryDate = e.date?.toDate ? e.date.toDate() : new Date(e.date);
+        if (entryDate < twoWeeksAgo) return false;
+        const note = (e.note || '').toLowerCase();
+        return note.includes('overwater') || note.includes('root rot') || note.includes('too much water');
+      });
+      if (recentOverwatering) {
+        if (!confirm(`Warning: ${plant.name} was recently diagnosed with a watering-related issue. Adding more water could make things worse. Continue anyway?`)) return;
+      }
+    } catch (e) {
+      // proceed if journal check fails
+    }
+
     try {
       await updatePlant(user.uid, plant.id, { lastWatered: new Date() });
       renderPlantDetail(container, user, plant.id, navigate);
@@ -406,6 +509,312 @@ function renderDetail(container, plant, user, navigate) {
     } finally {
       submitBtn.disabled = false;
       submitBtn.innerHTML = '<i class="fas fa-plus"></i> Add Entry';
+    }
+  });
+
+  // Plant Doctor modal
+  const doctorOverlay = document.getElementById('doctor-modal-overlay');
+  const doctorForm = document.getElementById('doctor-form');
+  const doctorContent = document.getElementById('doctor-modal-content');
+  const doctorFileInput = document.getElementById('doctor-photo-input');
+  const doctorUploadArea = document.getElementById('doctor-upload-area');
+  const doctorPreview = document.getElementById('doctor-photo-preview');
+  let doctorFile = null;
+
+  document.getElementById('open-doctor-btn').addEventListener('click', () => {
+    doctorOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  });
+
+  document.getElementById('doctor-modal-close').addEventListener('click', () => {
+    doctorOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+  document.getElementById('doctor-cancel')?.addEventListener('click', () => {
+    doctorOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+  doctorOverlay.addEventListener('click', (e) => {
+    if (e.target === doctorOverlay) {
+      doctorOverlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  });
+
+  // Photo upload for doctor
+  doctorUploadArea.addEventListener('click', () => doctorFileInput.click());
+  doctorFileInput.addEventListener('change', () => {
+    if (doctorFileInput.files.length) {
+      doctorFile = doctorFileInput.files[0];
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        doctorPreview.src = ev.target.result;
+        doctorPreview.style.display = 'block';
+      };
+      reader.readAsDataURL(doctorFile);
+    }
+  });
+
+  // Doctor form submit
+  doctorForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!doctorFile && !plant.photoURL) {
+      alert('Please upload a photo so the AI can examine your plant.');
+      return;
+    }
+
+    const submitBtn = document.getElementById('doctor-submit');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing photo...';
+
+    try {
+      const description = document.getElementById('doctor-description').value.trim();
+      const result = await diagnosePlant(plant, doctorFile, description);
+      renderDiagnosisResult(doctorContent, result, {
+        userId: user.uid,
+        plant,
+        onJournalSaved: () => loadJournal(user.uid, plant),
+      });
+    } catch (err) {
+      console.error('Diagnosis failed:', err);
+      doctorContent.innerHTML = `
+        <div class="diagnosis-error">
+          <div class="diagnosis-error-icon"><i class="fas fa-triangle-exclamation"></i></div>
+          <h3>Could not complete diagnosis</h3>
+          <p>${err.message || 'Something went wrong talking to the AI. Please try again in a moment.'}</p>
+          <button class="btn btn-secondary" id="doctor-retry">
+            <i class="fas fa-arrow-rotate-right"></i> Try Again
+          </button>
+        </div>
+      `;
+      document.getElementById('doctor-retry')?.addEventListener('click', () => resetDoctorModal());
+    }
+  });
+
+  function resetDoctorModal() {
+    doctorFile = null;
+    doctorContent.innerHTML = `
+      <form class="modal-form" id="doctor-form">
+        <div class="form-group">
+          <label>Upload a photo of the issue</label>
+          <div class="doctor-photo-section">
+            ${plant.photoURL ? `
+              <div class="doctor-existing-photo">
+                <img src="${plant.photoURL}" alt="${plant.name}" class="doctor-preview-img" id="doctor-photo-preview">
+                <p class="doctor-photo-hint">Using your plant's current photo, or upload a new one below</p>
+              </div>
+            ` : `
+              <img id="doctor-photo-preview" class="doctor-preview-img" style="display: none;">
+            `}
+            <div class="photo-upload">
+              <div class="photo-upload-area" id="doctor-upload-area">
+                <i class="fas fa-camera"></i>
+                <span>${plant.photoURL ? 'Upload a different photo' : 'Take or upload a photo'}</span>
+              </div>
+              <input type="file" id="doctor-photo-input" accept="image/*" hidden>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="doctor-description">What's going on? (optional)</label>
+          <textarea id="doctor-description" rows="2" placeholder="e.g. The leaves in the back are turning yellow and brown..."></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="doctor-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="doctor-submit">
+            <i class="fas fa-stethoscope"></i> Diagnose
+          </button>
+        </div>
+      </form>
+    `;
+    bindDoctorFormListeners();
+  }
+
+  function bindDoctorFormListeners() {
+    const newUploadArea = document.getElementById('doctor-upload-area');
+    const newFileInput = document.getElementById('doctor-photo-input');
+    const newPreview = document.getElementById('doctor-photo-preview');
+
+    document.getElementById('doctor-cancel')?.addEventListener('click', () => {
+      doctorOverlay.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+    newUploadArea.addEventListener('click', () => newFileInput.click());
+    newFileInput.addEventListener('change', () => {
+      if (newFileInput.files.length) {
+        doctorFile = newFileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          newPreview.src = ev.target.result;
+          newPreview.style.display = 'block';
+        };
+        reader.readAsDataURL(doctorFile);
+      }
+    });
+    const newForm = document.getElementById('doctor-form');
+    newForm.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      if (!doctorFile && !plant.photoURL) {
+        alert('Please upload a photo so the AI can examine your plant.');
+        return;
+      }
+      const submitBtn = document.getElementById('doctor-submit');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing photo...';
+      try {
+        const description = document.getElementById('doctor-description').value.trim();
+        const result = await diagnosePlant(plant, doctorFile, description);
+        renderDiagnosisResult(doctorContent, result, {
+          userId: user.uid,
+          plant,
+          onJournalSaved: () => loadJournal(user.uid, plant),
+        });
+      } catch (err) {
+        console.error('Diagnosis failed:', err);
+        doctorContent.innerHTML = `
+          <div class="diagnosis-error">
+            <div class="diagnosis-error-icon"><i class="fas fa-triangle-exclamation"></i></div>
+            <h3>Could not complete diagnosis</h3>
+            <p>${err.message || 'Something went wrong. Please try again.'}</p>
+            <button class="btn btn-secondary" id="doctor-retry">
+              <i class="fas fa-arrow-rotate-right"></i> Try Again
+            </button>
+          </div>
+        `;
+        document.getElementById('doctor-retry')?.addEventListener('click', () => resetDoctorModal());
+      }
+    });
+  }
+
+  window.addEventListener('doctor-reset', () => resetDoctorModal());
+}
+
+function renderDiagnosisResult(container, result, { userId, plant, onJournalSaved }) {
+  const urgencyMeta = {
+    urgent: { label: 'Urgent', icon: 'fa-triangle-exclamation', cssClass: 'diagnosis-urgent' },
+    moderate: { label: 'Moderate', icon: 'fa-circle-exclamation', cssClass: 'diagnosis-moderate' },
+    low: { label: 'Low priority', icon: 'fa-circle-info', cssClass: 'diagnosis-low' },
+  };
+  const confidenceMeta = {
+    high: { label: 'High confidence', icon: 'fa-circle-check' },
+    medium: { label: 'Moderate confidence', icon: 'fa-circle-half-stroke' },
+    low: { label: 'Low confidence', icon: 'fa-circle-question' },
+  };
+
+  const urgency = urgencyMeta[result.urgency] || urgencyMeta.moderate;
+  const confidence = confidenceMeta[result.confidence] || confidenceMeta.medium;
+
+  container.innerHTML = `
+    <div class="diagnosis-result">
+      <div class="diagnosis-header">
+        <div class="diagnosis-title-row">
+          <h3 class="diagnosis-name">${result.diagnosis}</h3>
+          <span class="diagnosis-badge ${urgency.cssClass}">
+            <i class="fas ${urgency.icon}"></i> ${urgency.label}
+          </span>
+        </div>
+        <span class="diagnosis-confidence">
+          <i class="fas ${confidence.icon}"></i> ${confidence.label}
+        </span>
+      </div>
+
+      <div class="diagnosis-section">
+        <p class="diagnosis-explanation">${result.explanation}</p>
+      </div>
+
+      ${result.causes?.length ? `
+        <div class="diagnosis-section">
+          <h4><i class="fas fa-search"></i> Likely Causes</h4>
+          <ul class="diagnosis-causes">
+            ${result.causes.map((c) => `<li>${c}</li>`).join('')}
+          </ul>
+        </div>
+      ` : ''}
+
+      ${result.actions?.length ? `
+        <div class="diagnosis-section">
+          <h4><i class="fas fa-list-check"></i> What To Do</h4>
+          <div class="diagnosis-actions">
+            ${result.actions.map((a, i) => `
+              <div class="diagnosis-action">
+                <span class="action-number">${i + 1}</span>
+                <div class="action-content">
+                  <strong>${a.step}</strong>
+                  <p>${a.detail}</p>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      ` : ''}
+
+      ${result.prevention ? `
+        <div class="diagnosis-section diagnosis-prevention">
+          <h4><i class="fas fa-shield-heart"></i> Prevention</h4>
+          <p>${result.prevention}</p>
+        </div>
+      ` : ''}
+
+      <div class="diagnosis-footer">
+        <button class="btn btn-primary" id="doctor-save-journal">
+          <i class="fas fa-book-medical"></i> Save to Journal
+        </button>
+        <button class="btn btn-secondary" id="doctor-new-diagnosis">
+          <i class="fas fa-arrow-rotate-right"></i> New Diagnosis
+        </button>
+      </div>
+    </div>
+  `;
+
+  // Save diagnosis to journal as an "issue" entry
+  document.getElementById('doctor-save-journal')?.addEventListener('click', async () => {
+    const saveBtn = document.getElementById('doctor-save-journal');
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+    try {
+      const actionSteps = (result.actions || []).map((a, i) => `${i + 1}. ${a.step}: ${a.detail}`).join('\n');
+      const causes = (result.causes || []).map((c) => `- ${c}`).join('\n');
+      const noteLines = [
+        `Diagnosis: ${result.diagnosis} (${result.confidence} confidence, ${result.urgency} urgency)`,
+        '',
+        result.explanation,
+        '',
+        causes ? `Likely causes:\n${causes}` : '',
+        actionSteps ? `\nAction plan:\n${actionSteps}` : '',
+        result.prevention ? `\nPrevention: ${result.prevention}` : '',
+      ].filter(Boolean).join('\n');
+
+      await addJournalEntry(userId, plant.id, {
+        type: 'issue',
+        note: noteLines,
+        photoURL: null,
+        date: new Date(),
+      });
+
+      saveBtn.innerHTML = '<i class="fas fa-check"></i> Saved to Journal!';
+      saveBtn.classList.add('btn-saved');
+
+      if (onJournalSaved) onJournalSaved();
+
+      setTimeout(() => {
+        saveBtn.innerHTML = '<i class="fas fa-book-medical"></i> Saved';
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to save diagnosis:', err);
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = '<i class="fas fa-book-medical"></i> Save to Journal';
+      alert('Could not save. Please try again.');
+    }
+  });
+
+  document.getElementById('doctor-new-diagnosis')?.addEventListener('click', () => {
+    // Trigger a reset by dispatching the open-doctor event logic
+    const overlay = document.getElementById('doctor-modal-overlay');
+    if (overlay) {
+      // We need to call the resetDoctorModal from the parent scope.
+      // Instead, re-render the form manually.
+      window.dispatchEvent(new CustomEvent('doctor-reset'));
     }
   });
 }
