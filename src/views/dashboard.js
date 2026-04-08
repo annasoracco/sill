@@ -69,33 +69,23 @@ function renderDashboardBody(container, plants, sickPlants = []) {
   const healthyHappyCount = plants.filter((p) => getWateringStatus(p) === 'happy' && !sickIds.has(p.id)).length;
 
   container.innerHTML = `
-    <div class="dash-stats">
-      <div class="stat-card">
-        <span class="stat-number">${plants.length}</span>
-        <span class="stat-label-text">Total plants</span>
-      </div>
-      <div class="stat-card stat-happy">
-        <span class="stat-number">${healthyHappyCount}</span>
-        <span class="stat-label-text">Happy</span>
-      </div>
-      <div class="stat-card stat-thirsty">
-        <span class="stat-number">${thirsty.length}</span>
-        <span class="stat-label-text">Need water</span>
-      </div>
+    <div class="dash-summary">
+      <span class="dash-summary-item">${plants.length} plants</span>
+      <span class="dash-summary-dot"></span>
+      <span class="dash-summary-item">${healthyHappyCount} happy</span>
+      ${thirsty.length > 0 ? `
+        <span class="dash-summary-dot"></span>
+        <span class="dash-summary-item dash-summary-alert">${thirsty.length} need water</span>
+      ` : ''}
       ${sickPlants.length > 0 ? `
-        <div class="stat-card stat-sick">
-          <span class="stat-number">${sickPlants.length}</span>
-          <span class="stat-label-text">Needs care</span>
-        </div>
+        <span class="dash-summary-dot"></span>
+        <span class="dash-summary-item dash-summary-warn">${sickPlants.length} need care</span>
       ` : ''}
     </div>
 
     ${sickPlants.length > 0 ? `
       <div class="dash-section">
-        <h3 class="dash-section-title">
-          <i class="fas fa-stethoscope" style="color: var(--danger);"></i>
-          Under the weather
-        </h3>
+        <h3 class="dash-section-title">Under the weather</h3>
         <div class="attention-list">
           ${sickPlants.map((p) => renderSickCard(p)).join('')}
         </div>
@@ -104,10 +94,7 @@ function renderDashboardBody(container, plants, sickPlants = []) {
 
     ${thirsty.length > 0 ? `
       <div class="dash-section">
-        <h3 class="dash-section-title">
-          <i class="fas fa-droplet" style="color: var(--danger);"></i>
-          Needs water now
-        </h3>
+        <h3 class="dash-section-title">Needs water</h3>
         <div class="attention-list">
           ${thirsty.map((p) => renderAttentionCard(p)).join('')}
         </div>
@@ -116,10 +103,7 @@ function renderDashboardBody(container, plants, sickPlants = []) {
 
     ${soonPlants.length > 0 ? `
       <div class="dash-section">
-        <h3 class="dash-section-title">
-          <i class="fas fa-clock" style="color: var(--warning);"></i>
-          Water soon
-        </h3>
+        <h3 class="dash-section-title">Water soon</h3>
         <div class="attention-list">
           ${soonPlants.map((p) => renderAttentionCard(p)).join('')}
         </div>
@@ -128,18 +112,13 @@ function renderDashboardBody(container, plants, sickPlants = []) {
 
     ${thirsty.length === 0 && soonPlants.length === 0 && sickPlants.length === 0 ? `
       <div class="dash-all-good">
-        <span class="all-good-emoji">🌿</span>
-        <h3>All your plants are happy!</h3>
-        <p class="text-muted">Nothing needs attention right now. Nice work.</p>
+        <p>All your plants are happy. Nothing needs attention right now.</p>
       </div>
     ` : ''}
 
     <div class="dash-section">
       <div class="dash-section-header">
-        <h3 class="dash-section-title">
-          <i class="fas fa-seedling" style="color: var(--sage);"></i>
-          Your plants
-        </h3>
+        <h3 class="dash-section-title">Your plants</h3>
         <a href="#/plants" class="btn btn-secondary btn-sm">View all</a>
       </div>
     </div>
