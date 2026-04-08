@@ -1,0 +1,9 @@
+[     582ms] FirebaseError: Firebase: Error (auth/invalid-api-key).
+    at createErrorInternal (http://localhost:5173/node_modules/.vite/deps/firebase_auth.js?v=79250021:413:37)
+    at _assert (http://localhost:5173/node_modules/.vite/deps/firebase_auth.js?v=79250021:416:24)
+    at Component.instanceFactory (http://localhost:5173/node_modules/.vite/deps/firebase_auth.js?v=79250021:9043:3)
+    at Provider.getOrInitializeService (http://localhost:5173/node_modules/.vite/deps/index.esm-CvAe7YbY.js?v=79250021:1089:30)
+    at Provider.initialize (http://localhost:5173/node_modules/.vite/deps/index.esm-CvAe7YbY.js?v=79250021:1049:25)
+    at initializeAuth (http://localhost:5173/node_modules/.vite/deps/firebase_auth.js?v=79250021:2778:18)
+    at getAuth (http://localhost:5173/node_modules/.vite/deps/firebase_auth.js?v=79250021:9089:15)
+    at http://localhost:5173/src/firebase.js:26:21
