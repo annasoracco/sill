@@ -16,12 +16,12 @@ import {
 } from 'firebase/storage';
 
 export const ENTRY_TYPES = {
-  observation: { label: 'Observation', icon: 'fa-eye', color: 'var(--sage)' },
+  observation: { label: 'Observation', icon: 'fa-eye', color: '#A8AEC4' },
   watering: { label: 'Watering', icon: 'fa-droplet', color: '#5B9BD5' },
-  repotting: { label: 'Repotting', icon: 'fa-arrows-up-down', color: 'var(--terracotta)' },
-  fertilizing: { label: 'Fertilizing', icon: 'fa-flask', color: 'var(--brass)' },
-  milestone: { label: 'Milestone', icon: 'fa-star', color: '#D4A039' },
-  issue: { label: 'Issue', icon: 'fa-triangle-exclamation', color: 'var(--danger)' },
+  repotting: { label: 'Repotting', icon: 'fa-arrows-up-down', color: '#FF6B6B' },
+  fertilizing: { label: 'Fertilizing', icon: 'fa-flask', color: '#FFB830' },
+  milestone: { label: 'Milestone', icon: 'fa-star', color: '#FFD700' },
+  issue: { label: 'Issue', icon: 'fa-triangle-exclamation', color: '#FF4466' },
 };
 
 function journalCollection(userId, plantId) {
