@@ -464,8 +464,13 @@ img {
 }
 
 .dash-summary-item {
-  font-size: 0.875rem;
-  color: var(--text-muted);
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.dash-summary-item strong {
+  color: var(--text-primary);
+  font-weight: 700;
 }
 
 .dash-summary-dot {

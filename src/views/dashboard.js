@@ -70,16 +70,16 @@ function renderDashboardBody(container, plants, sickPlants = []) {
 
   container.innerHTML = `
     <div class="dash-summary">
-      <span class="dash-summary-item">${plants.length} plants</span>
+      <span class="dash-summary-item"><strong>${plants.length}</strong> plants</span>
       <span class="dash-summary-dot"></span>
-      <span class="dash-summary-item">${healthyHappyCount} happy</span>
+      <span class="dash-summary-item"><strong>${healthyHappyCount}</strong> happy</span>
       ${thirsty.length > 0 ? `
         <span class="dash-summary-dot"></span>
-        <span class="dash-summary-item dash-summary-alert">${thirsty.length} need water</span>
+        <span class="dash-summary-item dash-summary-alert"><strong>${thirsty.length}</strong> need water</span>
       ` : ''}
       ${sickPlants.length > 0 ? `
         <span class="dash-summary-dot"></span>
-        <span class="dash-summary-item dash-summary-warn">${sickPlants.length} need care</span>
+        <span class="dash-summary-item dash-summary-warn"><strong>${sickPlants.length}</strong> need care</span>
       ` : ''}
     </div>
 
